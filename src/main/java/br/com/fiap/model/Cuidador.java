@@ -29,6 +29,7 @@ public class Cuidador extends Pessoa {
         this.paciente = paciente;
     }
 
+
     @Override
     public String toString() {
         return "\nCódigo: " + codigo +
