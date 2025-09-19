@@ -84,11 +84,11 @@ public class PacienteDao {
         }
     }
 
-    public Paciente buscarPorCodigo(int codigo) throws SQLException {
-        String sql = "SELECT * FROM T_JPS_PACIENTE WHERE CODIGO=?";
+    public Paciente buscarPorCpf(String cpf) throws SQLException {
+        String sql = "SELECT * FROM T_JPS_PACIENTE WHERE CPF=?";
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, codigo);
+            ps.setString(1, cpf);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     return mapResultSetToPaciente(rs);
