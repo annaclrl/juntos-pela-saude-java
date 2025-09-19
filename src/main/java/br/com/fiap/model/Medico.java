@@ -5,12 +5,10 @@ public class Medico extends Pessoa {
     private String especialidade;
     private int crm;
 
-    public Medico() { }
-
-    public Medico(int codigo, String nome, String email, String cpf, String telefone, int idade, String especialidade, int crm, Endereco endereco) {
-        super(codigo,nome, email, cpf, telefone, endereco, idade);
-        this.especialidade = especialidade;
+    public Medico(int codigo, String nome, String email, String cpf, String telefone, int idade, int crm, String especialidade, Endereco endereco) {
+        super(codigo, nome, email, cpf, telefone, endereco, idade);
         this.crm = crm;
+        this.especialidade = especialidade;
     }
 
     public String getEspecialidade() {
