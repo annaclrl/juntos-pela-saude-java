@@ -34,7 +34,6 @@ public class CuidadorDao {
             ps.setInt(7, cuidador.getEndereco().getNumero());
             ps.setString(8, cuidador.getEndereco().getComplemento());
             ps.setString(9, cuidador.getEndereco().getCep());
-            // Item 2: permite paciente nulo
             ps.setObject(10, cuidador.getPaciente() != null ? cuidador.getPaciente().getCodigo() : null);
 
             return ps.executeUpdate() > 0;
