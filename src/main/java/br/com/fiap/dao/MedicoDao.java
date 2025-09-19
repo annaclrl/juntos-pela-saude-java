@@ -99,7 +99,7 @@ public class MedicoDao {
                 }
             }
         }
-        return null; // não encontrado
+        return null;
     }
 
     private Medico mapResultSetToMedico(ResultSet rs) throws SQLException {
