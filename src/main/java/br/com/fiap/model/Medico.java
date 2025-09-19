@@ -2,25 +2,15 @@ package br.com.fiap.model;
 
 public class Medico extends Pessoa {
 
-    private int codigo;
     private String especialidade;
     private int crm;
 
     public Medico() { }
 
     public Medico(int codigo, String nome, String email, String cpf, String telefone, int idade, String especialidade, int crm, Endereco endereco) {
-        super(nome, email, cpf, telefone, endereco, idade);
-        this.codigo = codigo;
+        super(codigo,nome, email, cpf, telefone, endereco, idade);
         this.especialidade = especialidade;
         this.crm = crm;
-    }
-
-    public int getCodigo() {
-        return codigo;
-    }
-
-    public void setCodigo(int codigo) {
-        this.codigo = codigo;
     }
 
     public String getEspecialidade() {
@@ -45,7 +35,7 @@ public class Medico extends Pessoa {
 
     @Override
     public String toString() {
-        return "\nCódigo: " + codigo +
+        return "\nCódigo: " + getCodigo() +
                 "\nNome: " + getNome() +
                 "\nEspecialidade: " + especialidade +
                 "\nCRM: " + crm;

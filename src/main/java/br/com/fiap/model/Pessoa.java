@@ -2,6 +2,7 @@ package br.com.fiap.model;
 
 public abstract class Pessoa {
 
+    private int codigo;
     private String nome;
     private String email;
     private String cpf;
@@ -11,12 +12,22 @@ public abstract class Pessoa {
 
     public Pessoa() { }
 
-    public Pessoa(String nome, String email, String cpf, String telefone, Endereco endereco, int idade) {
+    public Pessoa(int codigo, String nome, String email, String cpf, String telefone, Endereco endereco, int idade) {
+        this.codigo = codigo;
         this.nome = nome;
         this.email = email;
         this.cpf = cpf;
         this.telefone = telefone;
         this.endereco = endereco;
+        this.idade = idade;
+    }
+
+    public int getCodigo() {
+        return codigo;
+    }
+
+    public void setCodigo(int codigo) {
+        this.codigo = codigo;
     }
 
     public String getNome() {
@@ -66,5 +77,7 @@ public abstract class Pessoa {
 
     public void setIdade(int idade) {
     }
+
+
 
 }
