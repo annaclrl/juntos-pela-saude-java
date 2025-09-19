@@ -4,17 +4,17 @@ public class Endereco {
 
     private String logradouro;
     private int numero;
-    private String endereco;
+    private String complemento;
     private String cep;
 
     public Endereco(){
 
     }
 
-    public Endereco(String logradouro, int numero, String endereco, String cep) {
+    public Endereco(String logradouro, int numero, String complemento, String cep) {
         this.logradouro = logradouro;
         this.numero = numero;
-        this.endereco = endereco;
+        this.complemento = complemento;
         this.cep = cep;
     }
 
@@ -34,12 +34,12 @@ public class Endereco {
         this.numero = numero;
     }
 
-    public String getEndereco() {
-        return endereco;
+    public String getComplemento() {
+        return complemento;
     }
 
-    public void setEndereco(String endereco) {
-        this.endereco = endereco;
+    public void setEndereco(String complemento) {
+        this.complemento = complemento;
     }
 
     public String getCep() {
