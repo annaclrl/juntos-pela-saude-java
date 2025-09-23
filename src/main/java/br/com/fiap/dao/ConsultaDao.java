@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ConsultaDao {
+public class ConsultaDao implements AutoCloseable  {
 
     private final Connection conn;
 
@@ -106,20 +106,6 @@ public class ConsultaDao {
         return consultas;
     }
 
-    public boolean consultaRealizada(int codigo) throws SQLException {
-        String sql = "SELECT DATAHORA FROM T_JPS_CONSULTA WHERE CODIGO=?";
-
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, codigo);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    LocalDateTime dataHora = rs.getTimestamp("DATAHORA").toLocalDateTime();
-                    return dataHora.isBefore(LocalDateTime.now());
-                }
-            }
-        }
-        return false;
-    }
 
     private Consulta mapResultSetToConsulta(ResultSet rs) throws SQLException {
         Paciente paciente = new Paciente();
@@ -137,6 +123,7 @@ public class ConsultaDao {
         );
     }
 
+    @Override
     public void close() throws SQLException {
         if (conn != null && !conn.isClosed()) {
             conn.close();

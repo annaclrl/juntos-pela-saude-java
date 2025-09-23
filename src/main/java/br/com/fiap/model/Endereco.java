@@ -8,7 +8,6 @@ public class Endereco {
     private String cep;
 
     public Endereco(){
-
     }
 
     public Endereco(String logradouro, int numero, String complemento, String cep) {
@@ -38,7 +37,7 @@ public class Endereco {
         return complemento;
     }
 
-    public void setEndereco(String complemento) {
+    public void setComplemento(String complemento) {
         this.complemento = complemento;
     }
 

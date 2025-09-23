@@ -53,11 +53,18 @@ public class FeedbackConsulta {
         return nota >= 0 && nota <= 10;
     }
 
+    public boolean comentarioValido() {
+        return comentario != null && comentario.length() <= 500;
+    }
+
     @Override
     public String toString() {
         return "\nCódigo: " + codigo +
                 "\nConsulta: " + (consulta != null ? consulta.getCodigo() : "N/A") +
+                "\nPaciente: " + (consulta != null ? consulta.getPaciente().getNome() : "N/A") +
+                "\nMédico: " + (consulta != null ? consulta.getMedico().getNome() : "N/A") +
                 "\nNota: " + nota +
                 "\nComentário: " + comentario;
     }
+
 }

@@ -26,7 +26,7 @@ public class ConsultaService {
             return false;
         }
 
-        consulta.setStatus("AGENDADA");
+        consulta.setStatus("CONFIRMADA");
         return consultaDao.inserir(consulta);
     }
 
@@ -41,6 +41,18 @@ public class ConsultaService {
     public List<Consulta> listarConsultasPorMedico(int medicoCodigo) throws SQLException {
         return consultaDao.listarPorMedico(medicoCodigo);
     }
+
+    public boolean adicionarFeedback(int consultaCodigo, String feedback) throws SQLException {
+        List<Consulta> consultas = listarConsultas();
+        for (Consulta c : consultas) {
+            if (c.getCodigo() == consultaCodigo) {
+                c.setFeedback(feedback);
+                return consultaDao.atualizar(c);
+            }
+        }
+        return false; // consulta não encontrada
+    }
+
 
     public void close() throws SQLException {
         consultaDao.close();

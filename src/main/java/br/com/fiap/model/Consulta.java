@@ -9,6 +9,7 @@ public class Consulta {
     private Paciente paciente;
     private Medico medico;
     private String status;
+    private String feedback;
     private LocalDateTime dataHora;
 
     public Consulta() { }
@@ -57,12 +58,19 @@ public class Consulta {
         return dataHora;
     }
 
+    public String getFeedback() {
+        return feedback;
+    }
+    public void setFeedback(String feedback) {
+        this.feedback = feedback;
+    }
+
     public void setDataHora(LocalDateTime dataHora) {
         this.dataHora = dataHora;
     }
 
     public boolean consultaRealizada() {
-        return dataHora.isBefore(LocalDateTime.now());
+            return dataHora != null && dataHora.isBefore(LocalDateTime.now());
     }
 
     public String getDataHoraFormatada() {
@@ -70,13 +78,15 @@ public class Consulta {
         return dataHora.format(formatter);
     }
 
+
     @Override
     public String toString() {
         return "\nCódigo: " + codigo +
-                "\nPaciente: " + (paciente != null ? paciente.getNome() : "N/A") +
-                "\nMedico: " + (medico != null ? medico.getNome() : "N/A") +
+                "\nPaciente: " + (paciente != null ? paciente.getNome() + " (CPF: " + paciente.getCpf() + ")" : "N/A") +
+                "\nMédico: " + (medico != null ? medico.getNome() + " (CRM: " + medico.getCrm() + ")" : "N/A") +
                 "\nStatus: " + status +
-                "\nData e Hora: " + getDataHoraFormatada();
+                "\nData e Hora: " + (dataHora != null ? getDataHoraFormatada() : "N/A");
     }
+
 }
 

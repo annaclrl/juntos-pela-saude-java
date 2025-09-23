@@ -1,7 +1,9 @@
-package br.com.fiap;
+package br.com.fiap.view;
+
+import br.com.fiap.model.Menu;
 
 public class Main {
     public static void main(String[] args) {
-        System.out.println("Hello, World!");
+        new Menu().exibirMenu();
     }
 }

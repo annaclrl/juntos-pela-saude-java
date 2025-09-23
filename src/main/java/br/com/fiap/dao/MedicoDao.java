@@ -8,7 +8,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MedicoDao {
+public class MedicoDao implements AutoCloseable {
 
     private final Connection conn;
 
@@ -123,6 +123,7 @@ public class MedicoDao {
         );
     }
 
+    @Override
     public void close() throws SQLException {
         if (conn != null && !conn.isClosed()) {
             conn.close();

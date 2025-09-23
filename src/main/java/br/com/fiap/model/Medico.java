@@ -39,7 +39,10 @@ public class Medico extends Pessoa {
     public String toString() {
         return "\nCódigo: " + getCodigo() +
                 "\nNome: " + getNome() +
+                "\nEmail: " + getEmail() +
+                "\nTelefone: " + getTelefone() +
                 "\nEspecialidade: " + especialidade +
                 "\nCRM: " + crm;
     }
+
 }

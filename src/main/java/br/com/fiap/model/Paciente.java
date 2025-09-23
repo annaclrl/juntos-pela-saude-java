@@ -16,7 +16,8 @@ public class Paciente extends Pessoa {
                 "\nNome: " + getNome() +
                 "\nIdade: " + getIdade() +
                 "\nCPF: " + getCpf() +
-                "\nTelefone: " + getTelefone();
+                "\nTelefone: " + getTelefone() +
+                "\nEndereço: " + (getEndereco() != null ? getEndereco() : "Não informado");
     }
 }
 
