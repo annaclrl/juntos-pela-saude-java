@@ -1,7 +1,6 @@
 package br.com.fiap.service;
 
 import br.com.fiap.dao.PacienteDao;
-import br.com.fiap.model.Medico;
 import br.com.fiap.model.Paciente;
 
 import java.sql.SQLException;

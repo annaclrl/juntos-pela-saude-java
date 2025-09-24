@@ -1,6 +1,7 @@
 package br.com.fiap.model;
 
 import br.com.fiap.service.ConsultaService;
+import br.com.fiap.service.FuncionarioService;
 import br.com.fiap.service.MedicoService;
 import br.com.fiap.service.PacienteService;
 
@@ -17,6 +18,7 @@ public class Menu {
         PacienteService pacienteService = new PacienteService();
         MedicoService medicoService = new MedicoService();
         ConsultaService consultaService = new ConsultaService();
+        FuncionarioService funcionarioService = new FuncionarioService();
 
         boolean continuar = true;
 
@@ -24,7 +26,8 @@ public class Menu {
             System.out.println("\n=== Juntos pela Saúde ===");
             System.out.println("1. Gerenciar Pacientes");
             System.out.println("2. Gerenciar Médicos");
-            System.out.println("3. Gerenciar Consultas");
+            System.out.println("3. Gerenciar Funcionários");
+            System.out.println("4. Gerenciar Consultas");
             System.out.println("0. Sair");
             System.out.print("Escolha uma opção: ");
             int opcao = scanner.nextInt();
@@ -38,6 +41,8 @@ public class Menu {
                     menuMedicos(medicoService);
                     break;
                 case 3:
+                    menuFuncionarios(funcionarioService);
+                case 4:
                     menuConsultas(consultaService);
                     break;
                 case 0:
@@ -51,6 +56,7 @@ public class Menu {
         }
         pacienteService.close();
         medicoService.close();
+        funcionarioService.close();
         consultaService.close();
     }
 
@@ -315,6 +321,132 @@ public class Menu {
             System.out.println(medico);
         } else {
             System.out.println("Médico não encontrado!");
+        }
+    }
+
+    public static void menuFuncionarios(FuncionarioService service) throws SQLException{
+        System.out.println("\n--- GERENCIAR FUNCIONÁRIOS ---");
+        System.out.println("1. Cadastrar funcionários");
+        System.out.println("2. Listar funcionários");
+        System.out.println("3. Atualizar funcionário");
+        System.out.println("4. Deletar funcionário");
+        System.out.println("5. Buscar funcionário por CPF");
+        System.out.println("0. Voltar");
+        System.out.print("Escolha uma opção: ");
+        int opcao = scanner.nextInt();
+
+        switch (opcao) {
+            case 1:
+                cadastrarFuncionario(service);
+                break;
+            case 2:
+                listarFuncionario(service);
+                break;
+            case 3:
+                atualizarFuncionario(service);
+                break;
+            case 4:
+                deletarFuncionario(service);
+                break;
+            case 5:
+                buscarFuncionarioPorCpf(service);
+        }
+    }
+
+    private static void cadastrarFuncionario(FuncionarioService service) throws SQLException {
+        System.out.print("Nome: ");
+        String nome = scanner.nextLine();
+        System.out.print("Email: ");
+        String email = scanner.nextLine();
+        System.out.print("CPF: ");
+        String cpf = scanner.nextLine();
+        System.out.print("Idade: ");
+        int idade = Integer.parseInt(scanner.nextLine());
+        System.out.print("Primeiro telefone: ");
+        String telefone1 = scanner.nextLine();
+        System.out.print("Segundo telefone: ");
+        String telefone2 = scanner.nextLine();
+
+
+        Funcionario funcionario = new Funcionario();
+        funcionario.setNome(nome);
+        funcionario.setEmail(email);
+        funcionario.setCpf(cpf);
+        funcionario.setTelefone1(telefone1);
+        funcionario.setTelefone2(telefone2);
+        funcionario.setIdade(idade);
+
+        if (service.cadastrarFuncionario(funcionario)) {
+            System.out.println("Funcionário cadastrado com sucesso!");
+        } else {
+            System.out.println("Erro ao cadastrar funcionário.");
+        }
+    }
+
+    private static void listarFuncionario(FuncionarioService service) throws SQLException {
+        List<Funcionario> funcionarios = service.listarFuncionarios();
+        if (funcionarios.isEmpty()) {
+            System.out.println("Nenhum funcionário cadastrado.");
+        } else {
+            funcionarios.forEach(System.out::println);
+        }
+    }
+
+    private static void atualizarFuncionario(FuncionarioService service) throws SQLException {
+        System.out.print("Código do funcionário para atualizar: ");
+        int codigo = scanner.nextInt();
+        Funcionario funcionario= service.buscarPorCodigo(codigo);
+        if (funcionario == null) {
+            System.out.println("Funcionário não encontrado!");
+            return;
+        }
+
+        System.out.print("Novo nome (" + funcionario.getNome() + "): ");
+        String nome = scanner.nextLine();
+        if (!nome.isBlank()) funcionario.setNome(nome);
+
+        System.out.print("Novo email (" + funcionario.getEmail() + "): ");
+        String email = scanner.nextLine();
+        if (!email.isBlank()) funcionario.setEmail(email);
+
+
+        System.out.print("Nova idade (" + funcionario.getIdade() + "): ");
+        String idadeStr = scanner.nextLine();
+        if (!idadeStr.isBlank()) funcionario.setIdade(Integer.parseInt(idadeStr));
+
+        System.out.print("Novo primeiro telefone (" + funcionario.getEmail() + "): ");
+        String telefone1 = scanner.nextLine();
+        if (!telefone1.isBlank()) funcionario.setTelefone2(telefone1);
+
+        System.out.print("Novo segundo telefone (" + funcionario.getEmail() + "): ");
+        String telefone2 = scanner.nextLine();
+        if (!telefone2.isBlank()) funcionario.setTelefone2(telefone2);
+
+        if (service.atualizarFuncionario(funcionario)) {
+            System.out.println("Funcionário atualizado com sucesso!");
+        } else {
+            System.out.println("Erro ao atualizar funcionário.");
+        }
+    }
+
+    private static void deletarFuncionario(FuncionarioService service) throws SQLException {
+        System.out.print("Código do funcionário para deletar: ");
+        int codigo = Integer.parseInt(scanner.nextLine());
+        if (service.deletarFuncionario(codigo)) {
+            System.out.println("Paciente deletado com sucesso!");
+        } else {
+            System.out.println("Erro ao deletar funcionário.");
+        }
+    }
+
+    private static void buscarFuncionarioPorCpf(FuncionarioService service) throws SQLException {
+        System.out.print("Digite o CPF: ");
+        String cpf = scanner.nextLine();
+        Funcionario funcionario = service.buscarPorCpf(cpf);
+        if (funcionario != null) {
+            System.out.println(funcionario);
+        } else {
+            System.out.println("Funcionário não encontrado!");
         }
     }
 
