@@ -6,20 +6,21 @@ public abstract class Pessoa {
     private String nome;
     private String email;
     private String cpf;
-    private String telefone;
-    private Endereco endereco;
     private int idade;
+    private String telefone1;
+    private String telefone2;
+
 
     public Pessoa() { }
 
-    public Pessoa(int codigo, String nome, String email, String cpf, String telefone, Endereco endereco, int idade) {
+    public Pessoa(int codigo, String nome, String email, String cpf, int idade,String telefone1, String telefone2) {
         this.codigo = codigo;
         this.nome = nome;
         this.email = email;
         this.cpf = cpf;
-        this.telefone = telefone;
-        this.endereco = endereco;
         this.idade = idade;
+        this.telefone1 = telefone1;
+        this.telefone2 = telefone2;
     }
 
     public int getCodigo() {
@@ -42,18 +43,17 @@ public abstract class Pessoa {
         return cpf;
     }
 
-    public String getTelefone() {
-        return telefone;
-    }
-
-    public Endereco getEndereco() {
-        return endereco;
-    }
-
     public int getIdade() {
         return idade;
     }
 
+    public String getTelefone1() {
+        return telefone1;
+    }
+
+    public String getTelefone2() {
+        return telefone2;
+    }
 
     public void setNome(String nome) {
         this.nome = nome;
@@ -67,18 +67,16 @@ public abstract class Pessoa {
         this.cpf = cpf;
     }
 
-    public void setTelefone(String telefone) {
-        this.telefone = telefone;
-    }
-
-    public void setEndereco(Endereco endereco) {
-        this.endereco = endereco;
-    }
-
     public void setIdade(int idade) {
         this.idade = idade;
     }
 
+    public void setTelefone1(String telefone1) {
+        this.telefone1 = telefone1;
+    }
 
+    public void setTelefone2(String telefone1) {
+        this.telefone2 = telefone1;
+    }
 
 }

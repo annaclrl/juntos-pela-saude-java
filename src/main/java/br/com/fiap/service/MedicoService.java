@@ -2,8 +2,10 @@ package br.com.fiap.service;
 
 import br.com.fiap.dao.MedicoDao;
 import br.com.fiap.model.Medico;
+import br.com.fiap.model.Paciente;
 
 import java.sql.SQLException;
+import java.util.List;
 
 public class MedicoService {
 
@@ -40,7 +42,30 @@ public class MedicoService {
         return medicoDao.inserir(medico);
     }
 
+    public List<Medico> listarMedicos() throws SQLException {
+        return medicoDao.listarTodos();
+    }
+
+    public Medico buscarPorCrm(int crm) throws SQLException {
+        return medicoDao.buscarPorCrm(crm);
+    }
+
+    public boolean atualizarMedico(Medico medico) throws SQLException {
+        return medicoDao.atualizar(medico);
+    }
+
+    public Medico buscarPorCodigo(int codigo) throws SQLException {
+        return medicoDao.buscarPorCodigo(codigo);
+    }
+
+
+    public boolean deletarMedico(int codigo) throws SQLException {
+        return medicoDao.deletar(codigo);
+    }
+
+
     public void close() throws SQLException {
         medicoDao.close();
     }
+
 }

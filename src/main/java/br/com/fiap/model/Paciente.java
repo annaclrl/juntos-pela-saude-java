@@ -5,8 +5,8 @@ public class Paciente extends Pessoa {
 
     public Paciente() { }
 
-    public Paciente(int codigo, String nome, String email, String cpf, String telefone, int idade, Endereco endereco) {
-        super(codigo, nome, email, cpf, telefone, endereco, idade);
+    public Paciente(int codigo, String nome, String email, String cpf, int idade, String telefone1, String telefone2) {
+        super(codigo, nome, email, cpf, idade, telefone1, telefone2);
     }
 
 
@@ -14,10 +14,10 @@ public class Paciente extends Pessoa {
     public String toString() {
         return "\nCódigo: " + getCodigo() +
                 "\nNome: " + getNome() +
-                "\nIdade: " + getIdade() +
                 "\nCPF: " + getCpf() +
-                "\nTelefone: " + getTelefone() +
-                "\nEndereço: " + (getEndereco() != null ? getEndereco() : "Não informado");
+                "\nIdade: " + getIdade() +
+                "\nPrimeiro telefone: " + getTelefone1() +
+                "\nSegundo telefone: " + getTelefone2();
     }
 }
 

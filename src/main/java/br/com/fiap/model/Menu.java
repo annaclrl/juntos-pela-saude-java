@@ -27,7 +27,7 @@ public class Menu {
             System.out.println("3. Gerenciar Consultas");
             System.out.println("0. Sair");
             System.out.print("Escolha uma opção: ");
-            String opcao = scanner.nextLine();
+            int opcao = scanner.nextInt();
 
             switch (opcao){
 
@@ -63,7 +63,7 @@ public class Menu {
         System.out.println("5. Buscar paciente por CPF");
         System.out.println("0. Voltar");
         System.out.print("Escolha uma opção: ");
-        String opcao = scanner.nextLine();
+        int opcao = scanner.nextInt();
 
         switch (opcao) {
             case 1:
@@ -90,35 +90,21 @@ public class Menu {
         String email = scanner.nextLine();
         System.out.print("CPF: ");
         String cpf = scanner.nextLine();
-        System.out.print("Telefone: ");
-        String telefone = scanner.nextLine();
         System.out.print("Idade: ");
         int idade = Integer.parseInt(scanner.nextLine());
-        System.out.print("Digite seu logradouro: ");
-
-        String logradouro = scanner.nextLine();
-        System.out.print("Digite o número: ");
-        int numero = scanner.nextInt();
-        scanner.nextLine();
-        System.out.print("Digite o complemento: ");
-        String complemento = scanner.nextLine();
-        System.out.print("Digite o cep: ");
-        String cep = scanner.nextLine();
-
-        Endereco endereco = new Endereco();
-        endereco.setLogradouro(logradouro);
-        endereco.setNumero(numero);
-        endereco.setComplemento(complemento);
-        endereco.setCep(cep);
+        System.out.print("Primeiro telefone: ");
+        String telefone1 = scanner.nextLine();
+        System.out.print("Segundo telefone: ");
+        String telefone2 = scanner.nextLine();
 
 
         Paciente paciente = new Paciente();
         paciente.setNome(nome);
         paciente.setEmail(email);
         paciente.setCpf(cpf);
-        paciente.setTelefone(telefone);
+        paciente.setTelefone1(telefone1);
+        paciente.setTelefone2(telefone2);
         paciente.setIdade(idade);
-        paciente.setEndereco(endereco);
 
         if (service.cadastrarPaciente(paciente)) {
             System.out.println("Paciente cadastrado com sucesso!");
@@ -137,9 +123,9 @@ public class Menu {
     }
 
     private static void atualizarPaciente(PacienteService service) throws SQLException {
-        System.out.print("CPF do paciente para atualizar: ");
-        String cpf = scanner.nextLine();
-        Paciente paciente = service.buscarPorCpf(cpf);
+        System.out.print("Código do paciente para atualizar: ");
+        int codigo = scanner.nextInt();
+        Paciente paciente = service.buscarPorCodigo(codigo);
         if (paciente == null) {
             System.out.println("Paciente não encontrado!");
             return;
@@ -153,29 +139,18 @@ public class Menu {
         String email = scanner.nextLine();
         if (!email.isBlank()) paciente.setEmail(email);
 
-        System.out.print("Novo telefone (" + paciente.getTelefone() + "): ");
-        String telefone = scanner.nextLine();
-        if (!telefone.isBlank()) paciente.setTelefone(telefone);
 
         System.out.print("Nova idade (" + paciente.getIdade() + "): ");
         String idadeStr = scanner.nextLine();
         if (!idadeStr.isBlank()) paciente.setIdade(Integer.parseInt(idadeStr));
 
-        System.out.print("Novo logradouro (" + paciente.getEndereco().getLogradouro() + "): ");
-        String logradouro = scanner.nextLine();
-        if (!logradouro.isBlank()) paciente.getEndereco().setLogradouro(logradouro);
+        System.out.print("Novo primeiro telefone (" + paciente.getEmail() + "): ");
+        String telefone1 = scanner.nextLine();
+        if (!telefone1.isBlank()) paciente.setTelefone2(telefone1);
 
-        System.out.print("Novo número (" + paciente.getEndereco().getNumero() + "): ");
-        String numeroStr = scanner.nextLine();
-        if (!numeroStr.isBlank()) paciente.getEndereco().setNumero(Integer.parseInt(numeroStr));
-
-        System.out.print("Novo complemento (" + paciente.getEndereco().getComplemento() + "): ");
-        String complemento = scanner.nextLine();
-        if (!complemento.isBlank()) paciente.getEndereco().setComplemento(complemento);
-
-        System.out.print("Novo CEP (" + paciente.getEndereco().getCep() + "): ");
-        String cep = scanner.nextLine();
-        if (!cep.isBlank()) paciente.getEndereco().setCep(cep);
+        System.out.print("Novo segundo telefone (" + paciente.getEmail() + "): ");
+        String telefone2 = scanner.nextLine();
+        if (!telefone2.isBlank()) paciente.setTelefone2(telefone2);
 
         if (service.atualizarPaciente(paciente)) {
             System.out.println("Paciente atualizado com sucesso!");
@@ -183,6 +158,28 @@ public class Menu {
             System.out.println("Erro ao atualizar paciente.");
         }
     }
+
+    private static void deletarPaciente(PacienteService service) throws SQLException {
+        System.out.print("Código do paciente para deletar: ");
+        int codigo = Integer.parseInt(scanner.nextLine());
+        if (service.deletarPaciente(codigo)) {
+            System.out.println("Paciente deletado com sucesso!");
+        } else {
+            System.out.println("Erro ao deletar paciente.");
+        }
+    }
+
+    private static void buscarPacientePorCpf(PacienteService service) throws SQLException {
+        System.out.print("Digite o CPF: ");
+        String cpf = scanner.nextLine();
+        Paciente paciente = service.buscarPorCpf(cpf);
+        if (paciente != null) {
+            System.out.println(paciente);
+        } else {
+            System.out.println("Paciente não encontrado!");
+        }
+    }
+
 
     private static void menuMedicos(MedicoService service) throws SQLException {
         System.out.println("\n--- GERENCIAR MÉDICOS ---");
@@ -212,6 +209,112 @@ public class Menu {
             case 5:
                 buscarMedicoPorCrm(service);
                 break;
+        }
+    }
+
+    private static void cadastrarMedico(MedicoService service) throws SQLException {
+
+        System.out.print("Nome: ");
+        String nome = scanner.nextLine();
+        System.out.print("Email: ");
+        String email = scanner.nextLine();
+        System.out.print("CPF: ");
+        String cpf = scanner.nextLine();
+        System.out.print("Idade: ");
+        int idade = Integer.parseInt(scanner.nextLine());
+        System.out.print("Primeiro telefone: ");
+        String telefone1 = scanner.nextLine();
+        System.out.print("Segundo telefone: ");
+        String telefone2 = scanner.nextLine();
+        System.out.print("CRM: ");
+        int crm = Integer.parseInt(scanner.nextLine());
+        System.out.print("Especialidade: ");
+        String especialidade = scanner.nextLine();
+
+        Medico medico = new Medico();
+        medico.setNome(nome);
+        medico.setEmail(email);
+        medico.setCpf(cpf);
+        medico.setIdade(idade);
+        medico.setTelefone1(telefone1);
+        medico.setTelefone2(telefone2);
+        medico.setCrm(crm);
+        medico.setEspecialidade(especialidade);
+
+        if (service.cadastrarMedico(medico)) {
+            System.out.println("Médico cadastrado com sucesso!");
+        } else {
+            System.out.println("Erro ao cadastrar médico.");
+        }
+    }
+
+    private static void listarMedicos(MedicoService service) throws SQLException {
+        List<Medico> medicos = service.listarMedicos();
+        if (medicos.isEmpty()) {
+            System.out.println("Nenhum médico cadastrado.");
+        } else {
+            medicos.forEach(System.out::println);
+        }
+    }
+
+    private static void atualizarMedico(MedicoService service) throws SQLException {
+        System.out.print("Código do médico para atualizar: ");
+        int codigo = Integer.parseInt(scanner.nextLine());
+        Medico medico = service.buscarPorCodigo(codigo);
+        if (medico == null) {
+            System.out.println("Médico não encontrado!");
+            return;
+        }
+
+        System.out.print("Novo nome (" + medico.getNome() + "): ");
+        String nome = scanner.nextLine();
+        if (!nome.isBlank()) medico.setNome(nome);
+
+        System.out.print("Novo email (" + medico.getEmail() + "): ");
+        String email = scanner.nextLine();
+        if (!email.isBlank()) medico.setEmail(email);
+
+        System.out.print("Nova idade (" + medico.getIdade() + "): ");
+        String idadeStr = scanner.nextLine();
+        if (!idadeStr.isBlank()) medico.setIdade(Integer.parseInt(idadeStr));
+
+        System.out.print("Novo primeiro telefone (" + medico.getEmail() + "): ");
+        String telefone1 = scanner.nextLine();
+        if (!telefone1.isBlank()) medico.setTelefone1(telefone1);
+
+        System.out.print("Novo segundo telefone (" + medico.getEmail() + "): ");
+        String telefone2 = scanner.nextLine();
+        if (!telefone2.isBlank()) medico.setTelefone2(telefone2);
+
+        System.out.print("Nova especialidade (" + medico.getNome() + "): ");
+        String especialidade = scanner.nextLine();
+        if (!especialidade.isBlank()) medico.setEspecialidade(especialidade);
+
+        if (service.atualizarMedico(medico)) {
+            System.out.println("Médico atualizado com sucesso!");
+        } else {
+            System.out.println("Erro ao atualizar médico.");
+        }
+    }
+
+    private static void deletarMedico(MedicoService service) throws SQLException {
+        System.out.print("Código do médico para deletar: ");
+        int codigo = Integer.parseInt(scanner.nextLine());
+        if (service.deletarMedico(codigo)) {
+            System.out.println("Médico deletado com sucesso!");
+        } else {
+            System.out.println("Erro ao deletar médico.");
+        }
+    }
+
+    private static void buscarMedicoPorCrm(MedicoService service) throws SQLException {
+        System.out.print("Digite o CRM: ");
+        int crm = scanner.nextInt();
+        Medico medico = service.buscarPorCrm(crm);
+        if (medico != null) {
+            System.out.println(medico);
+        } else {
+            System.out.println("Médico não encontrado!");
         }
     }
 

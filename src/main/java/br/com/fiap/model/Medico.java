@@ -5,8 +5,8 @@ public class Medico extends Pessoa {
     private String especialidade;
     private int crm;
 
-    public Medico(int codigo, String nome, String email, String cpf, String telefone, int idade, int crm, String especialidade, Endereco endereco) {
-        super(codigo, nome, email, cpf, telefone, endereco, idade);
+    public Medico(int codigo, String nome, String email, String cpf, int idade, String telefone1,String telefone2, int crm, String especialidade) {
+        super(codigo, nome, email, cpf, idade, telefone1, telefone2);
         this.crm = crm;
         this.especialidade = especialidade;
     }
@@ -40,7 +40,10 @@ public class Medico extends Pessoa {
         return "\nCódigo: " + getCodigo() +
                 "\nNome: " + getNome() +
                 "\nEmail: " + getEmail() +
-                "\nTelefone: " + getTelefone() +
+                "\nCPF: " + getEmail() +
+                "\nIdade: " + getIdade() +
+                "\nPrimeiro telefone: " + getTelefone1() +
+                "\nSegundo telefone: " + getTelefone2() +
                 "\nEspecialidade: " + especialidade +
                 "\nCRM: " + crm;
     }

@@ -1,7 +1,6 @@
 package br.com.fiap.dao;
 
 import br.com.fiap.factory.ConnectionFactory;
-import br.com.fiap.model.Endereco;
 import br.com.fiap.model.Medico;
 
 import java.sql.*;
@@ -19,23 +18,19 @@ public class MedicoDao implements AutoCloseable {
     public boolean inserir(Medico medico) throws SQLException {
         String sql = """
             INSERT INTO T_JPS_MEDICO 
-            (CODIGO, NOME, EMAIL, CPF, TELEFONE, IDADE, CRM, ESPECIALIDADE, LOGRADOURO, NUMERO, COMPLEMENTO, CEP) 
-            VALUES (SEQ_MEDICO.NEXTVAL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            (CODIGO, NOME, EMAIL, CPF, IDADE, TELEFONE1,TELEFONE2, CRM, ESPECIALIDADE) 
+            VALUES (SEQ_MEDICO.NEXTVAL, ?, ?, ?, ?, ?, ?, ?)
             """;
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, medico.getNome());
             ps.setString(2, medico.getEmail());
             ps.setString(3, medico.getCpf());
-            ps.setString(4, medico.getTelefone());
-            ps.setInt(5, medico.getIdade());
+            ps.setInt(6, medico.getIdade());
+            ps.setString(4, medico.getTelefone1());
+            ps.setString(4, medico.getTelefone2());
             ps.setInt(6, medico.getCrm());
             ps.setString(7, medico.getEspecialidade());
-            ps.setString(8, medico.getEndereco().getLogradouro());
-            ps.setInt(9, medico.getEndereco().getNumero());
-            ps.setString(10, medico.getEndereco().getComplemento());
-            ps.setString(11, medico.getEndereco().getCep());
-
             return ps.executeUpdate() > 0;
         }
     }
@@ -65,15 +60,12 @@ public class MedicoDao implements AutoCloseable {
             ps.setString(1, medico.getNome());
             ps.setString(2, medico.getEmail());
             ps.setString(3, medico.getCpf());
-            ps.setString(4, medico.getTelefone());
-            ps.setInt(5, medico.getIdade());
-            ps.setInt(6, medico.getCrm());
-            ps.setString(7, medico.getEspecialidade());
-            ps.setString(8, medico.getEndereco().getLogradouro());
-            ps.setInt(9, medico.getEndereco().getNumero());
-            ps.setString(10, medico.getEndereco().getComplemento());
-            ps.setString(11, medico.getEndereco().getCep());
-            ps.setInt(12, medico.getCodigo());
+            ps.setInt(4, medico.getIdade());
+            ps.setString(5, medico.getTelefone1());
+            ps.setString(6, medico.getTelefone2());
+            ps.setInt(7, medico.getCrm());
+            ps.setString(8, medico.getEspecialidade());
+            ps.setInt(9, medico.getCodigo());
 
             return ps.executeUpdate() > 0;
         }
@@ -86,6 +78,19 @@ public class MedicoDao implements AutoCloseable {
             ps.setInt(1, codigo);
             return ps.executeUpdate() > 0;
         }
+    }
+
+    public Medico buscarPorCodigo(int codigo) throws SQLException {
+        String sql = "SELECT * FROM T_JPS_MEDICO WHERE CODIGO = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, codigo);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return mapResultSetToMedico(rs);
+                }
+            }
+        }
+        return null;
     }
 
     public Medico buscarPorCrm(int crm) throws SQLException {
@@ -103,23 +108,17 @@ public class MedicoDao implements AutoCloseable {
     }
 
     private Medico mapResultSetToMedico(ResultSet rs) throws SQLException {
-        Endereco endereco = new Endereco(
-                rs.getString("LOGRADOURO"),
-                rs.getInt("NUMERO"),
-                rs.getString("COMPLEMENTO"),
-                rs.getString("CEP")
-        );
 
         return new Medico(
                 rs.getInt("CODIGO"),
                 rs.getString("NOME"),
                 rs.getString("EMAIL"),
                 rs.getString("CPF"),
-                rs.getString("TELEFONE"),
                 rs.getInt("IDADE"),
+                rs.getString("TELEFONE1"),
+                rs.getString("TELEFONE2"),
                 rs.getInt("CRM"),
-                rs.getString("ESPECIALIDADE"),
-                endereco
+                rs.getString("ESPECIALIDADE")
         );
     }
 

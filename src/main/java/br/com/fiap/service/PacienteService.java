@@ -1,6 +1,7 @@
 package br.com.fiap.service;
 
 import br.com.fiap.dao.PacienteDao;
+import br.com.fiap.model.Medico;
 import br.com.fiap.model.Paciente;
 
 import java.sql.SQLException;
@@ -53,13 +54,17 @@ public class PacienteService {
         return pacienteDao.atualizar(paciente);
     }
 
+    public Paciente buscarPorCodigo(int codigo) throws SQLException {
+        return pacienteDao.buscarPorCodigo(codigo);
+    }
+
+    public boolean deletarPaciente(int codigo) throws SQLException {
+        return pacienteDao.deletar(codigo);
+    }
 
 
     public void close() throws SQLException {
         pacienteDao.close();
     }
-
-
-
 
 }
