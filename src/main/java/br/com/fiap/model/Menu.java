@@ -488,5 +488,49 @@ public class Menu {
         }
     }
 
+    private static void listarConsultasPorPaciente(ConsultaService service) throws SQLException {
+        System.out.print("Código do paciente: ");
+        int pacienteCodigo = Integer.parseInt(scanner.nextLine());
+        List<Consulta> consultas = service.listarConsultasPorPaciente(pacienteCodigo);
+        if (consultas.isEmpty()) {
+            System.out.println("Nenhuma consulta encontrada para este paciente.");
+        } else {
+            consultas.forEach(System.out::println);
+        }
+    }
+
+    private static void listarConsultasPorMedico(ConsultaService service) throws SQLException {
+        System.out.print("Código do médico: ");
+        int medicoCodigo = Integer.parseInt(scanner.nextLine());
+        List<Consulta> consultas = service.listarConsultasPorMedico(medicoCodigo);
+        if (consultas.isEmpty()) {
+            System.out.println("Nenhuma consulta encontrada para este médico.");
+        } else {
+            consultas.forEach(System.out::println);
+        }
+
+    }
+
+    private static void adicionarFeedback(ConsultaService service) throws SQLException {
+        System.out.print("Código da consulta: ");
+        int codigoConsulta = Integer.parseInt(scanner.nextLine());
+
+        Consulta consulta = service.buscarPorCodigo(codigoConsulta);
+        if (consulta == null) {
+            System.out.println("Consulta não encontrada!");
+            return;
+        }
+
+        System.out.print("Digite o feedback: ");
+        String feedback = scanner.nextLine();
+
+        consulta.setFeedback(feedback);
+
+        if (service.adicionarFeedback(consulta)) {
+            System.out.println("Feedback adicionado com sucesso!");
+        } else {
+            System.out.println("Erro ao adicionar feedback.");
+        }
+    }
 
 }

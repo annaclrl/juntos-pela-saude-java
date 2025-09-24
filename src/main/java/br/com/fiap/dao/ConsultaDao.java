@@ -6,7 +6,6 @@ import br.com.fiap.model.Medico;
 import br.com.fiap.model.Paciente;
 
 import java.sql.*;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -67,6 +66,19 @@ public class ConsultaDao implements AutoCloseable  {
         }
     }
 
+    public Consulta buscarPorCodigo(int codigo) throws SQLException {
+        String sql = "SELECT * FROM T_JPS_CONUSLTA WHERE CODIGO = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, codigo);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return mapResultSetToConsulta(rs);
+                }
+            }
+        }
+        return null;
+    }
+
     public boolean deletar(int codigo) throws SQLException {
         String sql = "DELETE FROM T_JPS_CONSULTA WHERE CODIGO=?";
 
@@ -104,6 +116,15 @@ public class ConsultaDao implements AutoCloseable  {
             }
         }
         return consultas;
+    }
+
+    public boolean adicionarFeedback(Consulta consulta) throws SQLException {
+        String sql = "UPDATE consultas SET feedback = ? WHERE id = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, consulta.getFeedback());
+            stmt.setInt(2, consulta.getCodigo());
+            return stmt.executeUpdate() > 0;
+        }
     }
 
 

@@ -2,6 +2,7 @@ package br.com.fiap.service;
 
 import br.com.fiap.dao.ConsultaDao;
 import br.com.fiap.model.Consulta;
+import br.com.fiap.model.Paciente;
 
 import java.sql.SQLException;
 import java.time.LocalDateTime;
@@ -15,7 +16,7 @@ public class ConsultaService {
         this.consultaDao = new ConsultaDao();
     }
 
-    public boolean agendarConsulta(Consulta consulta) throws SQLException {
+    public boolean cadastrarConsulta(Consulta consulta) throws SQLException {
         if (consulta.getDataHora() == null || consulta.getDataHora().isBefore(LocalDateTime.now())) {
             System.out.println("Data/hora inválida! Deve ser futura.");
             return false;
@@ -42,17 +43,16 @@ public class ConsultaService {
         return consultaDao.listarPorMedico(medicoCodigo);
     }
 
-    public boolean adicionarFeedback(int consultaCodigo, String feedback) throws SQLException {
-        List<Consulta> consultas = listarConsultas();
-        for (Consulta c : consultas) {
-            if (c.getCodigo() == consultaCodigo) {
-                c.setFeedback(feedback);
-                return consultaDao.atualizar(c);
-            }
+    public boolean adicionarFeedback(Consulta consulta) throws SQLException {
+        if (consulta.getFeedback() == null || consulta.getFeedback().isBlank()) {
+            return false;
         }
-        return false; // consulta não encontrada
+        return consultaDao.adicionarFeedback(consulta);
     }
 
+    public Consulta buscarPorCodigo(int codigo) throws SQLException {
+        return consultaDao.buscarPorCodigo(codigo);
+    }
 
     public void close() throws SQLException {
         consultaDao.close();
