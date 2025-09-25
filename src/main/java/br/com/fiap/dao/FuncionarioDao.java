@@ -19,16 +19,16 @@ public class FuncionarioDao {
         String sql = """
             INSERT INTO T_JPS_FUNCIONARIO
             (ID_FUNCIONARIO, NM_FUNCIONARIO, EM_FUNCIONARIO, CPF_FUNCIONARIO, IDD_FUNCIONARIO, TEL1_FUNCIONARIO, TEL2_FUNCIONARIO )
-            VALUES (SEQ_FUNCIONARIO.NEXTVAL, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            VALUES (SEQ_FUNCIONARIO.NEXTVAL, ?, ?, ?, ?, ?, ?)
             """;
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, funcionario.getNome());
             ps.setString(2, funcionario.getEmail());
             ps.setString(3, funcionario.getCpf());
-            ps.setInt(5, funcionario.getIdade());
-            ps.setString(4, funcionario.getTelefone1());
-            ps.setString(4, funcionario.getTelefone2());
+            ps.setInt(4, funcionario.getIdade());
+            ps.setString(5, funcionario.getTelefone1());
+            ps.setString(6, funcionario.getTelefone2());
             return ps.executeUpdate() > 0;
         }
     }
@@ -50,25 +50,25 @@ public class FuncionarioDao {
     public boolean atualizar(Funcionario funcionario) throws SQLException {
         String sql = """
             UPDATE T_JPS_FUNCIONARIO
-            SET NOME=?, EMAIL=?, CPF=?, IDADE=?, TELEFONE1=?, TELEFONE2=?
-            WHERE CODIGO=?
+            SET NM_FUNCIONARIO=?, EM_FUNCIONARIO=?, CPF_FUNCIONARIO=?, IDD_FUNCIONARIO=?, TEL1_FUNCIONARIO=?, TEL2_FUNCIONARIO=?
+            WHERE ID_FUNCIONARIO=?
             """;
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, funcionario.getNome());
             ps.setString(2, funcionario.getEmail());
             ps.setString(3, funcionario.getCpf());
-            ps.setInt(5, funcionario.getIdade());
-            ps.setString(4, funcionario.getTelefone1());
-            ps.setString(4, funcionario.getTelefone2());
-            ps.setInt(10, funcionario.getCodigo());
+            ps.setInt(4, funcionario.getIdade());
+            ps.setString(5, funcionario.getTelefone1());
+            ps.setString(6, funcionario.getTelefone2());
+            ps.setInt(7, funcionario.getCodigo());
 
             return ps.executeUpdate() > 0;
         }
     }
 
     public Funcionario buscarPorCodigo(int codigo) throws SQLException {
-        String sql = "SELECT * FROM T_JPS_FUNCIONARIO WHERE CODIGO = ?";
+        String sql = "SELECT * FROM T_JPS_FUNCIONARIO WHERE ID_FUNCIONARIO = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, codigo);
             try (ResultSet rs = ps.executeQuery()) {
@@ -81,7 +81,7 @@ public class FuncionarioDao {
     }
 
     public boolean deletar(int codigo) throws SQLException {
-        String sql = "DELETE FROM T_JPS_FUNCIONARIO WHERE CODIGO=?";
+        String sql = "DELETE FROM T_JPS_FUNCIONARIO WHERE ID_FUNCIONARIO=?";
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, codigo);
@@ -90,7 +90,7 @@ public class FuncionarioDao {
     }
 
     public Funcionario buscarPorCpf(String cpf) throws SQLException {
-        String sql = "SELECT * FROM T_JPS_FUNCIONARIO WHERE CPF=?";
+        String sql = "SELECT * FROM T_JPS_FUNCIONARIO WHERE CPF_FUNCIONARIO=?";
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, cpf);
