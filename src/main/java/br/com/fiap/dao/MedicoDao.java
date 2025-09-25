@@ -19,18 +19,18 @@ public class MedicoDao implements AutoCloseable {
         String sql = """
             INSERT INTO T_JPS_MEDICO 
             (ID_MEDICO, NM_MEDICO, EM_MEDICO, CPF_MEDICO, IDD_MEDICO, TEL1_MEDICO,TEL2_MEDICO, CRM_MEDICO, ESP_MEDICO) 
-            VALUES (SEQ_MEDICO.NEXTVAL, ?, ?, ?, ?, ?, ?, ?)
+            VALUES (SEQ_MEDICO.NEXTVAL, ?, ?, ?, ?, ?, ?, ?,?)
             """;
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, medico.getNome());
             ps.setString(2, medico.getEmail());
             ps.setString(3, medico.getCpf());
-            ps.setInt(6, medico.getIdade());
-            ps.setString(4, medico.getTelefone1());
-            ps.setString(4, medico.getTelefone2());
-            ps.setInt(6, medico.getCrm());
-            ps.setString(7, medico.getEspecialidade());
+            ps.setInt(4, medico.getIdade());
+            ps.setString(5, medico.getTelefone1());
+            ps.setString(6, medico.getTelefone2());
+            ps.setInt(7, medico.getCrm());
+            ps.setString(8, medico.getEspecialidade());
             return ps.executeUpdate() > 0;
         }
     }
@@ -52,7 +52,7 @@ public class MedicoDao implements AutoCloseable {
     public boolean atualizar(Medico medico) throws SQLException {
         String sql = """
             UPDATE T_JPS_MEDICO 
-            SET NM_MEDICO=?, EM_MEDICO=?, CPF_MEDICO=?, IDD_MEDICO=?, TEL1_MEDICO=?, TEL2_MEDICO=? CRM_MEDICO=?, ESP_MEDICO=? 
+            SET NM_MEDICO=?, EM_MEDICO=?, CPF_MEDICO=?, IDD_MEDICO=?, TEL1_MEDICO=?, TEL2_MEDICO=?, CRM_MEDICO=?, ESP_MEDICO=? 
             WHERE ID_MEDICO=?
             """;
 
@@ -72,7 +72,7 @@ public class MedicoDao implements AutoCloseable {
     }
 
     public boolean deletar(int codigo) throws SQLException {
-        String sql = "DELETE FROM T_JPS_MEDICO WHERE CODIGO=?";
+        String sql = "DELETE FROM T_JPS_MEDICO WHERE ID_MEDICO=?";
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, codigo);
@@ -81,7 +81,7 @@ public class MedicoDao implements AutoCloseable {
     }
 
     public Medico buscarPorCodigo(int codigo) throws SQLException {
-        String sql = "SELECT * FROM T_JPS_MEDICO WHERE CODIGO = ?";
+        String sql = "SELECT * FROM T_JPS_MEDICO WHERE ID_MEDICO = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, codigo);
             try (ResultSet rs = ps.executeQuery()) {
@@ -94,7 +94,7 @@ public class MedicoDao implements AutoCloseable {
     }
 
     public Medico buscarPorCrm(int crm) throws SQLException {
-        String sql = "SELECT * FROM T_JPS_MEDICO WHERE CRM=?";
+        String sql = "SELECT * FROM T_JPS_MEDICO WHERE CRM_MEDICO=?";
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, crm);
@@ -110,15 +110,15 @@ public class MedicoDao implements AutoCloseable {
     private Medico mapResultSetToMedico(ResultSet rs) throws SQLException {
 
         return new Medico(
-                rs.getInt("CODIGO"),
-                rs.getString("NOME"),
-                rs.getString("EMAIL"),
-                rs.getString("CPF"),
-                rs.getInt("IDADE"),
-                rs.getString("TELEFONE1"),
-                rs.getString("TELEFONE2"),
-                rs.getInt("CRM"),
-                rs.getString("ESPECIALIDADE")
+                rs.getInt("ID_MEDICO"),
+                rs.getString("NM_MEDICO"),
+                rs.getString("EM_MEDICO"),
+                rs.getString("CPF_MEDICO"),
+                rs.getInt("IDD_MEDICO"),
+                rs.getString("TEL1_MEDICO"),
+                rs.getString("TEL2_MEDICO"),
+                rs.getInt("CRM_MEDICO"),
+                rs.getString("ESP_MEDICO")
         );
     }
 
