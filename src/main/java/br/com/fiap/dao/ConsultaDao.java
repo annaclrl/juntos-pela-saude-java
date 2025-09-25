@@ -20,8 +20,8 @@ public class ConsultaDao implements AutoCloseable  {
     public boolean inserir(Consulta consulta) throws SQLException {
         String sql = """
             INSERT INTO T_JPS_CONSULTA 
-            (CODIGO, PACIENTE_CODIGO, MEDICO_CODIGO, DATAHORA, STATUS)
-            VALUES (SEQ_CONSULTA.NEXTVAL, ?, ?, ?, ?)
+            (ID_CONSULTA, ID_PACIENTE, ID_MEDICO, ID_FUNCIONARIO, DT_HR_CONSULTA, ST_CONSULTA)
+            VALUES (SEQ_CONSULTA.NEXTVAL, ?, ?, ?, ?,?)
             """;
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -51,8 +51,8 @@ public class ConsultaDao implements AutoCloseable  {
     public boolean atualizar(Consulta consulta) throws SQLException {
         String sql = """
             UPDATE T_JPS_CONSULTA 
-            SET PACIENTE_CODIGO=?, MEDICO_CODIGO=?, DATAHORA=?, STATUS=?
-            WHERE CODIGO=?
+            SET ID_PACIENTE=?, ID_MEDICO=?, DATAHORA=?, STATUS=?
+            WHERE ID_CONSULTA=?
             """;
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {

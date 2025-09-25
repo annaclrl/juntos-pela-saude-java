@@ -18,7 +18,7 @@ public class MedicoDao implements AutoCloseable {
     public boolean inserir(Medico medico) throws SQLException {
         String sql = """
             INSERT INTO T_JPS_MEDICO 
-            (CODIGO, NOME, EMAIL, CPF, IDADE, TELEFONE1,TELEFONE2, CRM, ESPECIALIDADE) 
+            (ID_MEDICO, NM_MEDICO, EM_MEDICO, CPF_MEDICO, IDD_MEDICO, TEL1_MEDICO,TEL2_MEDICO, CRM_MEDICO, ESP_MEDICO) 
             VALUES (SEQ_MEDICO.NEXTVAL, ?, ?, ?, ?, ?, ?, ?)
             """;
 
@@ -52,8 +52,8 @@ public class MedicoDao implements AutoCloseable {
     public boolean atualizar(Medico medico) throws SQLException {
         String sql = """
             UPDATE T_JPS_MEDICO 
-            SET NOME=?, EMAIL=?, CPF=?, TELEFONE=?, IDADE=?, CRM=?, ESPECIALIDADE=?, LOGRADOURO=?, NUMERO=?, COMPLEMENTO=?, CEP=? 
-            WHERE CODIGO=?
+            SET NM_MEDICO=?, EM_MEDICO=?, CPF_MEDICO=?, IDD_MEDICO=?, TEL1_MEDICO=?, TEL2_MEDICO=? CRM_MEDICO=?, ESP_MEDICO=? 
+            WHERE ID_MEDICO=?
             """;
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {

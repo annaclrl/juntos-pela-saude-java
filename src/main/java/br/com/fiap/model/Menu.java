@@ -91,13 +91,14 @@ public class Menu {
 
     private static void cadastrarPaciente(PacienteService service) throws SQLException {
         System.out.print("Nome: ");
-        String nome = scanner.nextLine();
+        String nome = scanner.nextLine() + scanner.next();
         System.out.print("Email: ");
-        String email = scanner.nextLine();
+        String email = scanner.nextLine() + scanner.next();
         System.out.print("CPF: ");
-        String cpf = scanner.nextLine();
+        String cpf = scanner.nextLine() + scanner.next();
         System.out.print("Idade: ");
-        int idade = Integer.parseInt(scanner.nextLine());
+        int idade = scanner.nextInt();
+        scanner.nextLine();
         System.out.print("Primeiro telefone: ");
         String telefone1 = scanner.nextLine();
         System.out.print("Segundo telefone: ");
@@ -461,10 +462,10 @@ public class Menu {
         System.out.println("7. Adicionar feedback");
         System.out.println("0. Voltar");
         System.out.print("Escolha uma opção: ");
-        String opcao = scanner.nextLine();
+        int opcao = scanner.nextInt();
 
         switch (opcao) {
-            case 1:
+            /*case 1:
                 cadastrarConsulta(service);
                 break;
             case 2:
@@ -475,7 +476,7 @@ public class Menu {
                 break;
             case 4:
                 listarConsultas(service);
-                break;
+                break;*/
             case 5:
                 listarConsultasPorPaciente(service);
                 break;

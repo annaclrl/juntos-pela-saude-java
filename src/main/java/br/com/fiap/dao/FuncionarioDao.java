@@ -18,7 +18,7 @@ public class FuncionarioDao {
     public boolean inserir(Funcionario funcionario) throws SQLException {
         String sql = """
             INSERT INTO T_JPS_FUNCIONARIO
-            (CODIGO, NOME, EMAIL, CPF, IDADE, TELEFONE1, TELEFONE2 )
+            (ID_FUNCIONARIO, NM_FUNCIONARIO, EM_FUNCIONARIO, CPF_FUNCIONARIO, IDD_FUNCIONARIO, TEL1_FUNCIONARIO, TEL2_FUNCIONARIO )
             VALUES (SEQ_FUNCIONARIO.NEXTVAL, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """;
 
@@ -105,13 +105,13 @@ public class FuncionarioDao {
 
     private Funcionario mapResultSetToFuncionario(ResultSet rs) throws SQLException {
         return new Funcionario(
-                rs.getInt("CODIGO"),
-                rs.getString("NOME"),
-                rs.getString("EMAIL"),
-                rs.getString("CPF"),
-                rs.getInt("IDADE"),
-                rs.getString("TELEFONE1"),
-                rs.getString("TELEFONE2")
+                rs.getInt("ID_FUNCIONARIO"),
+                rs.getString("NM_FUNCIONARIO"),
+                rs.getString("EM_FUNCIONARIO"),
+                rs.getString("CPF_FUNCIONARIO"),
+                rs.getInt("IDD_FUNCIONARIO"),
+                rs.getString("TEL1_FUNCIONARIO"),
+                rs.getString("TEL2_FUNCIONARIO")
         );
     }
 

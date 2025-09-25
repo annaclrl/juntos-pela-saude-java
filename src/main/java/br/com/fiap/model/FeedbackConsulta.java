@@ -7,6 +7,7 @@ public class FeedbackConsulta {
     private String comentario;
     private double nota;
 
+
     public FeedbackConsulta() {
     }
 

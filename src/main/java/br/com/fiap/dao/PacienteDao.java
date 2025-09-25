@@ -1,7 +1,6 @@
 package br.com.fiap.dao;
 
 import br.com.fiap.factory.ConnectionFactory;
-import br.com.fiap.model.Medico;
 import br.com.fiap.model.Paciente;
 
 import java.sql.*;
@@ -19,15 +18,15 @@ public class PacienteDao  implements  AutoCloseable{
     public boolean inserir(Paciente paciente) throws SQLException {
         String sql = """
             INSERT INTO T_JPS_PACIENTE 
-            (CODIGO, NOME, EMAIL, CPF, IDADE, TELEFONE1, TELEFONE2) 
-            VALUES (SEQ_PACIENTE.NEXTVAL, ?, ?, ?, ?, ?)
+            (ID_PACIENTE, NM_PACIENTE, EM_PACIENTE, CPF_PACIENTE, IDD_PACIENTE, TEL1_PACIENTE, TEL2_PACIENTE) 
+            VALUES (SEQ_PACIENTE.NEXTVAL, ?, ?, ?, ?, ?,?)
             """;
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, paciente.getNome());
             ps.setString(2, paciente.getEmail());
             ps.setString(3, paciente.getCpf());
-            ps.setInt(4, paciente.getIdade());
+            ps.setInt(4,paciente.getIdade());
             ps.setString(5, paciente.getTelefone1());
             ps.setString(6, paciente.getTelefone2());
             return ps.executeUpdate() > 0;
@@ -51,8 +50,8 @@ public class PacienteDao  implements  AutoCloseable{
     public boolean atualizar(Paciente paciente) throws SQLException {
         String sql = """
             UPDATE T_JPS_PACIENTE 
-            SET NOME=?, EMAIL=?, CPF=?, IDADE=?, TELEFONE1=?,  TELEFONE2=?
-            WHERE CODIGO=?
+            SET NM_PACIENTE=?, EM_PACIENTE=?, CPF_PACIENTE=?, IDD_PACIENTE=?, TEL1_PACIENTE=?,  TEL2_PACIENTE=?
+            WHERE ID_PACIENTE=?
             """;
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -69,7 +68,7 @@ public class PacienteDao  implements  AutoCloseable{
     }
 
     public Paciente buscarPorCodigo(int codigo) throws SQLException {
-        String sql = "SELECT * FROM T_JPS_PACIENTE WHERE CODIGO = ?";
+        String sql = "SELECT * FROM T_JPS_PACIENTE WHERE ID_PACIENTE = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, codigo);
             try (ResultSet rs = ps.executeQuery()) {
@@ -82,7 +81,7 @@ public class PacienteDao  implements  AutoCloseable{
     }
 
     public boolean deletar(int codigo) throws SQLException {
-        String sql = "DELETE FROM T_JPS_PACIENTE WHERE CODIGO=?";
+        String sql = "DELETE FROM T_JPS_PACIENTE WHERE ID_PACIENTE=?";
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, codigo);
@@ -91,7 +90,7 @@ public class PacienteDao  implements  AutoCloseable{
     }
 
     public Paciente buscarPorCpf(String cpf) throws SQLException {
-        String sql = "SELECT * FROM T_JPS_PACIENTE WHERE CPF=?";
+        String sql = "SELECT * FROM T_JPS_PACIENTE WHERE CPF_PACIENTE=?";
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, cpf);
@@ -107,13 +106,13 @@ public class PacienteDao  implements  AutoCloseable{
     private Paciente mapResultSetToPaciente(ResultSet rs) throws SQLException {
 
         return new Paciente(
-                rs.getInt("CODIGO"),
-                rs.getString("NOME"),
-                rs.getString("EMAIL"),
-                rs.getString("CPF"),
-                rs.getInt("IDADE"),
-                rs.getString("TELEFONE1"),
-                rs.getString("TELEFONE2")
+                rs.getInt("ID_PACIENTE"),
+                rs.getString("NM_PACIENTE"),
+                rs.getString("EM_PACIENTE"),
+                rs.getString("CPF_PACIENTE"),
+                rs.getInt("IDD_PACIENTE"),
+                rs.getString("TEL1_PACIENTE"),
+                rs.getString("TEL2_PACIENTE")
         );
     }
 
