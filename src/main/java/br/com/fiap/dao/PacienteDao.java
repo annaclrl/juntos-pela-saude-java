@@ -58,10 +58,10 @@ public class PacienteDao  implements  AutoCloseable{
             ps.setString(1, paciente.getNome());
             ps.setString(2, paciente.getEmail());
             ps.setString(3, paciente.getCpf());
-            ps.setInt(5, paciente.getIdade());
-            ps.setString(6, paciente.getTelefone1());
-            ps.setString(7, paciente.getTelefone2());
-            ps.setInt(8, paciente.getCodigo());
+            ps.setInt(4, paciente.getIdade());
+            ps.setString(5, paciente.getTelefone1());
+            ps.setString(6, paciente.getTelefone2());
+            ps.setInt(7, paciente.getCodigo());
 
             return ps.executeUpdate() > 0;
         }
