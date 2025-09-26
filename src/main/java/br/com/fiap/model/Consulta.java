@@ -8,19 +8,21 @@ public class Consulta {
     private int codigo;
     private Paciente paciente;
     private Medico medico;
-    private String status;
-    private String feedback;
+    private Funcionario funcionario;
+    private StatusConsulta status;
     private LocalDateTime dataHora;
 
     public Consulta() { }
 
-    public Consulta(int codigo, Paciente paciente, Medico medico, LocalDateTime dataHora, String status) {
+    public Consulta(int codigo, Paciente paciente, Medico medico, Funcionario funcionario, LocalDateTime dataHora, StatusConsulta status) {
         this.codigo = codigo;
         this.paciente = paciente;
         this.medico = medico;
+        this.funcionario = funcionario;
         this.dataHora = dataHora;
         this.status = status;
     }
+
 
     public int getCodigo() {
         return codigo;
@@ -46,11 +48,19 @@ public class Consulta {
         this.medico = medico;
     }
 
-    public String getStatus() {
+    public Funcionario getFuncionario() {
+        return funcionario;
+    }
+
+    public void setFuncionario(Funcionario funcionario) {
+        this.funcionario = funcionario;
+    }
+
+    public StatusConsulta getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(StatusConsulta status) {
         this.status = status;
     }
 
@@ -58,32 +68,20 @@ public class Consulta {
         return dataHora;
     }
 
-    public String getFeedback() {
-        return feedback;
-    }
-    public void setFeedback(String feedback) {
-        this.feedback = feedback;
-    }
-
     public void setDataHora(LocalDateTime dataHora) {
         this.dataHora = dataHora;
     }
 
-    public boolean consultaRealizada() {
-            return dataHora != null && dataHora.isBefore(LocalDateTime.now());
-    }
 
     public String getDataHoraFormatada() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
         return dataHora.format(formatter);
     }
-
-
     @Override
     public String toString() {
         return "\nCódigo: " + codigo +
-                "\nPaciente: " + (paciente != null ? paciente.getNome() + " (CPF: " + paciente.getCpf() + ")" : "N/A") +
-                "\nMédico: " + (medico != null ? medico.getNome() + " (CRM: " + medico.getCrm() + ")" : "N/A") +
+                "\nPaciente: " + (paciente != null ? "ID " + paciente.getCodigo() : "N/A") +
+                "\nMédico: " + (medico != null ? "ID " + medico.getCodigo() : "N/A") +
                 "\nStatus: " + status +
                 "\nData e Hora: " + (dataHora != null ? getDataHoraFormatada() : "N/A");
     }
