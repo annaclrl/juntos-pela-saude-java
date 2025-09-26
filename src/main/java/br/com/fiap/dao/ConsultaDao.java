@@ -1,9 +1,7 @@
 package br.com.fiap.dao;
 
 import br.com.fiap.factory.ConnectionFactory;
-import br.com.fiap.model.Consulta;
-import br.com.fiap.model.Medico;
-import br.com.fiap.model.Paciente;
+import br.com.fiap.model.*;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -27,8 +25,9 @@ public class ConsultaDao implements AutoCloseable  {
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, consulta.getPaciente().getCodigo());
             ps.setInt(2, consulta.getMedico().getCodigo());
-            ps.setTimestamp(3, Timestamp.valueOf(consulta.getDataHora()));
-            ps.setString(4, consulta.getStatus());
+            ps.setInt(3, consulta.getFuncionario().getCodigo());
+            ps.setTimestamp(4, Timestamp.valueOf(consulta.getDataHora()));
+            ps.setString(5, consulta.getStatus().getValorBanco());
 
             return ps.executeUpdate() > 0;
         }
@@ -51,23 +50,24 @@ public class ConsultaDao implements AutoCloseable  {
     public boolean atualizar(Consulta consulta) throws SQLException {
         String sql = """
             UPDATE T_JPS_CONSULTA 
-            SET ID_PACIENTE=?, ID_MEDICO=?, DATAHORA=?, STATUS=?
+            SET ID_PACIENTE=?, ID_MEDICO=?, ID_FUNCIONARIO=?, DT_HR_CONSULTA=?, ST_CONSULTA=?
             WHERE ID_CONSULTA=?
             """;
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, consulta.getPaciente().getCodigo());
             ps.setInt(2, consulta.getMedico().getCodigo());
-            ps.setTimestamp(3, Timestamp.valueOf(consulta.getDataHora()));
-            ps.setString(4, consulta.getStatus());
-            ps.setInt(5, consulta.getCodigo());
+            ps.setInt(3,consulta.getFuncionario().getCodigo());
+            ps.setTimestamp(4, Timestamp.valueOf(consulta.getDataHora()));
+            ps.setString(5, consulta.getStatus().getValorBanco());
+            ps.setInt(6, consulta.getCodigo());
 
             return ps.executeUpdate() > 0;
         }
     }
 
     public Consulta buscarPorCodigo(int codigo) throws SQLException {
-        String sql = "SELECT * FROM T_JPS_CONUSLTA WHERE CODIGO = ?";
+        String sql = "SELECT * FROM T_JPS_CONSULTA WHERE ID_CONSULTA = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, codigo);
             try (ResultSet rs = ps.executeQuery()) {
@@ -80,7 +80,7 @@ public class ConsultaDao implements AutoCloseable  {
     }
 
     public boolean deletar(int codigo) throws SQLException {
-        String sql = "DELETE FROM T_JPS_CONSULTA WHERE CODIGO=?";
+        String sql = "DELETE FROM T_JPS_CONSULTA WHERE ID_CONSULTA=?";
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, codigo);
@@ -90,7 +90,7 @@ public class ConsultaDao implements AutoCloseable  {
 
     public List<Consulta> listarPorPaciente(int pacienteCodigo) throws SQLException {
         List<Consulta> consultas = new ArrayList<>();
-        String sql = "SELECT * FROM T_JPS_CONSULTA WHERE PACIENTE_CODIGO=?";
+        String sql = "SELECT * FROM T_JPS_CONSULTA WHERE ID_PACIENTE=?";
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, pacienteCodigo);
@@ -105,7 +105,7 @@ public class ConsultaDao implements AutoCloseable  {
 
     public List<Consulta> listarPorMedico(int medicoCodigo) throws SQLException {
         List<Consulta> consultas = new ArrayList<>();
-        String sql = "SELECT * FROM T_JPS_CONSULTA WHERE MEDICO_CODIGO=?";
+        String sql = "SELECT * FROM T_JPS_CONSULTA WHERE ID_MEDICO=?";
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, medicoCodigo);
@@ -118,31 +118,35 @@ public class ConsultaDao implements AutoCloseable  {
         return consultas;
     }
 
-    public boolean adicionarFeedback(Consulta consulta) throws SQLException {
-        String sql = "UPDATE consultas SET feedback = ? WHERE id = ?";
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, consulta.getFeedback());
-            stmt.setInt(2, consulta.getCodigo());
-            return stmt.executeUpdate() > 0;
-        }
-    }
-
 
     private Consulta mapResultSetToConsulta(ResultSet rs) throws SQLException {
         Paciente paciente = new Paciente();
-        paciente.setCodigo(rs.getInt("PACIENTE_CODIGO"));
+        paciente.setCodigo(rs.getInt("ID_PACIENTE"));
 
         Medico medico = new Medico();
-        medico.setCodigo(rs.getInt("MEDICO_CODIGO"));
+        medico.setCodigo(rs.getInt("ID_MEDICO"));
+
+        Funcionario funcionario = new Funcionario();
+        funcionario.setCodigo(rs.getInt("ID_FUNCIONARIO"));
+
+        String statusStr = rs.getString("ST_CONSULTA");
+        StatusConsulta status = null;
+        try {
+            status = StatusConsulta.fromDbValue(statusStr);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Status inválido no banco: " + statusStr);
+        }
 
         return new Consulta(
-                rs.getInt("CODIGO"),
+                rs.getInt("ID_CONSULTA"),
                 paciente,
                 medico,
-                rs.getTimestamp("DATAHORA").toLocalDateTime(),
-                rs.getString("STATUS")
+                funcionario,
+                rs.getTimestamp("DT_HR_CONSULTA").toLocalDateTime(),
+                status
         );
     }
+
 
     @Override
     public void close() throws SQLException {
