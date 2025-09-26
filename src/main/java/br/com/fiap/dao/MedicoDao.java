@@ -2,6 +2,7 @@ package br.com.fiap.dao;
 
 import br.com.fiap.factory.ConnectionFactory;
 import br.com.fiap.model.Medico;
+import br.com.fiap.model.Paciente;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -49,6 +50,84 @@ public class MedicoDao implements AutoCloseable {
         return medicos;
     }
 
+
+    public Medico buscarPorCodigo(int codigo) throws SQLException {
+        String sql = "SELECT * FROM T_JPS_MEDICO WHERE ID_MEDICO = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, codigo);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return mapResultSetToMedico(rs);
+                }
+            }
+        }
+        return null;
+    }
+
+    public Medico buscarPorCrm(int crm) throws SQLException {
+        String sql = "SELECT * FROM T_JPS_MEDICO WHERE CRM_MEDICO=?";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, crm);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return mapResultSetToMedico(rs);
+                }
+            }
+        }
+        return null;
+    }
+
+    public Medico buscarPorCpf(String cpf) throws SQLException {
+        String sql = "SELECT * FROM T_JPS_MEDICO WHERE CPF_MEDICO=?";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, cpf);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return mapResultSetToMedico(rs);
+                }
+            }
+        }
+        return null;
+    }
+
+    public Medico buscarPorEmail(String email) throws SQLException {
+        String sql = "SELECT * FROM T_JPS_MEDICO WHERE EM_MEDICO=?";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, email);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return mapResultSetToMedico(rs);
+                }
+            }
+        }
+        return null;
+    }
+
+    public Medico buscarPorTelefone(String telefone1, String telefone2) throws SQLException {
+        String sql = """
+        SELECT * FROM T_JPS_MEDICO 
+        WHERE (TEL1_MEDICO = ? OR TEL2_MEDICO = ?) 
+          OR (TEL1_MEDICO = ? OR TEL2_MEDICO = ?)
+        """;
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, telefone1);
+            ps.setString(2, telefone1);
+            ps.setString(3, telefone2);
+            ps.setString(4, telefone2);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return mapResultSetToMedico(rs);
+                }
+            }
+        }
+        return null;
+    }
+
     public boolean atualizar(Medico medico) throws SQLException {
         String sql = """
             UPDATE T_JPS_MEDICO 
@@ -80,32 +159,6 @@ public class MedicoDao implements AutoCloseable {
         }
     }
 
-    public Medico buscarPorCodigo(int codigo) throws SQLException {
-        String sql = "SELECT * FROM T_JPS_MEDICO WHERE ID_MEDICO = ?";
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, codigo);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return mapResultSetToMedico(rs);
-                }
-            }
-        }
-        return null;
-    }
-
-    public Medico buscarPorCrm(int crm) throws SQLException {
-        String sql = "SELECT * FROM T_JPS_MEDICO WHERE CRM_MEDICO=?";
-
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, crm);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return mapResultSetToMedico(rs);
-                }
-            }
-        }
-        return null;
-    }
 
     private Medico mapResultSetToMedico(ResultSet rs) throws SQLException {
 

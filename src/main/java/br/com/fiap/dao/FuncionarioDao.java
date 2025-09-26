@@ -2,6 +2,7 @@ package br.com.fiap.dao;
 
 import br.com.fiap.factory.ConnectionFactory;
 import br.com.fiap.model.Funcionario;
+import br.com.fiap.model.Medico;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -47,6 +48,69 @@ public class FuncionarioDao {
         return funcionarios;
     }
 
+    public Funcionario buscarPorCodigo(int codigo) throws SQLException {
+        String sql = "SELECT * FROM T_JPS_FUNCIONARIO WHERE ID_FUNCIONARIO = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, codigo);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return mapResultSetToFuncionario(rs);
+                }
+            }
+        }
+        return null;
+    }
+
+    public Funcionario buscarPorCpf(String cpf) throws SQLException {
+        String sql = "SELECT * FROM T_JPS_FUNCIONARIO WHERE CPF_FUNCIONARIO=?";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, cpf);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return mapResultSetToFuncionario(rs);
+                }
+            }
+        }
+        return null;
+    }
+
+    public Funcionario buscarPorEmail(String email) throws SQLException {
+        String sql = "SELECT * FROM T_JPS_FUNCIONARIO WHERE EM_FUNCIONARIO=?";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, email);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return mapResultSetToFuncionario(rs);
+                }
+            }
+        }
+        return null;
+    }
+
+    public Funcionario buscarPorTelefone(String telefone1, String telefone2) throws SQLException {
+        String sql = """
+        SELECT * FROM T_JPS_FUNCIONARIO 
+        WHERE (TEL1_FUNCIONARIO = ? OR TEL2_FUNCIONARIO = ?) 
+          OR (TEL1_FUNCIONARIO = ? OR TEL2_FUNCIONARIO = ?)
+        """;
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, telefone1);
+            ps.setString(2, telefone1);
+            ps.setString(3, telefone2);
+            ps.setString(4, telefone2);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return mapResultSetToFuncionario(rs);
+                }
+            }
+        }
+        return null;
+    }
+
     public boolean atualizar(Funcionario funcionario) throws SQLException {
         String sql = """
             UPDATE T_JPS_FUNCIONARIO
@@ -67,19 +131,6 @@ public class FuncionarioDao {
         }
     }
 
-    public Funcionario buscarPorCodigo(int codigo) throws SQLException {
-        String sql = "SELECT * FROM T_JPS_FUNCIONARIO WHERE ID_FUNCIONARIO = ?";
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, codigo);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return mapResultSetToFuncionario(rs);
-                }
-            }
-        }
-        return null;
-    }
-
     public boolean deletar(int codigo) throws SQLException {
         String sql = "DELETE FROM T_JPS_FUNCIONARIO WHERE ID_FUNCIONARIO=?";
 
@@ -87,20 +138,6 @@ public class FuncionarioDao {
             ps.setInt(1, codigo);
             return ps.executeUpdate() > 0;
         }
-    }
-
-    public Funcionario buscarPorCpf(String cpf) throws SQLException {
-        String sql = "SELECT * FROM T_JPS_FUNCIONARIO WHERE CPF_FUNCIONARIO=?";
-
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, cpf);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return mapResultSetToFuncionario(rs);
-                }
-            }
-        }
-        return null;
     }
 
     private Funcionario mapResultSetToFuncionario(ResultSet rs) throws SQLException {

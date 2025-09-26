@@ -47,6 +47,70 @@ public class PacienteDao  implements  AutoCloseable{
         return pacientes;
     }
 
+    public Paciente buscarPorCodigo(int codigo) throws SQLException {
+        String sql = "SELECT * FROM T_JPS_PACIENTE WHERE ID_PACIENTE = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, codigo);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return mapResultSetToPaciente(rs);
+                }
+            }
+        }
+        return null;
+    }
+
+    public Paciente buscarPorCpf(String cpf) throws SQLException {
+        String sql = "SELECT * FROM T_JPS_PACIENTE WHERE CPF_PACIENTE=?";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, cpf);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return mapResultSetToPaciente(rs);
+                }
+            }
+        }
+        return null;
+    }
+
+    public Paciente buscarPorEmail(String email) throws SQLException {
+        String sql = "SELECT * FROM T_JPS_PACIENTE WHERE EM_PACIENTE=?";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, email);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return mapResultSetToPaciente(rs);
+                }
+            }
+        }
+        return null;
+    }
+
+    public Paciente buscarPorTelefone(String telefone1, String telefone2) throws SQLException {
+        String sql = """
+        SELECT * FROM T_JPS_PACIENTE 
+        WHERE (TEL1_PACIENTE = ? OR TEL2_PACIENTE = ?) 
+          OR (TEL1_PACIENTE = ? OR TEL2_PACIENTE = ?)
+        """;
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, telefone1);
+            ps.setString(2, telefone1);
+            ps.setString(3, telefone2);
+            ps.setString(4, telefone2);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return mapResultSetToPaciente(rs);
+                }
+            }
+        }
+        return null;
+    }
+
+
     public boolean atualizar(Paciente paciente) throws SQLException {
         String sql = """
             UPDATE T_JPS_PACIENTE 
@@ -67,19 +131,6 @@ public class PacienteDao  implements  AutoCloseable{
         }
     }
 
-    public Paciente buscarPorCodigo(int codigo) throws SQLException {
-        String sql = "SELECT * FROM T_JPS_PACIENTE WHERE ID_PACIENTE = ?";
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, codigo);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return mapResultSetToPaciente(rs);
-                }
-            }
-        }
-        return null;
-    }
-
     public boolean deletar(int codigo) throws SQLException {
         String sql = "DELETE FROM T_JPS_PACIENTE WHERE ID_PACIENTE=?";
 
@@ -89,19 +140,6 @@ public class PacienteDao  implements  AutoCloseable{
         }
     }
 
-    public Paciente buscarPorCpf(String cpf) throws SQLException {
-        String sql = "SELECT * FROM T_JPS_PACIENTE WHERE CPF_PACIENTE=?";
-
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, cpf);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return mapResultSetToPaciente(rs);
-                }
-            }
-        }
-        return null;
-    }
 
     private Paciente mapResultSetToPaciente(ResultSet rs) throws SQLException {
 

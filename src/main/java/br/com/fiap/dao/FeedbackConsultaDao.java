@@ -75,7 +75,7 @@ public class FeedbackConsultaDao implements AutoCloseable{
     public boolean atualizar(FeedbackConsulta feedback) throws SQLException {
         String sql = """
             UPDATE T_JPS_FEEDBACK
-            SET COMENTARIO = ?, NOTA = ?
+            SET DS_FEEDBACK = ?, NT_FEEDBACK = ?
             WHERE ID_FEEDBACK = ?
             """;
 
@@ -103,8 +103,8 @@ public class FeedbackConsultaDao implements AutoCloseable{
         FeedbackConsulta fb = new FeedbackConsulta();
         fb.setCodigo(rs.getInt("ID_FEEDBACK"));
         fb.setConsulta(consulta);
-        fb.setComentario(rs.getString("COMENTARIO"));
-        fb.setNota(rs.getDouble("NOTA"));
+        fb.setComentario(rs.getString("DS_FEEDBACK"));
+        fb.setNota(rs.getDouble("NT_FEEDBACK"));
         return fb;
     }
 

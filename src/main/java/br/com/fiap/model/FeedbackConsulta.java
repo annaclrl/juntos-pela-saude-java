@@ -51,7 +51,7 @@ public class FeedbackConsulta {
     }
 
     public boolean notaValida() {
-        return nota >= 0 && nota <= 10;
+        return nota >= 0 && nota <= 5;
     }
 
     public boolean comentarioValido() {
@@ -62,10 +62,9 @@ public class FeedbackConsulta {
     public String toString() {
         return "\nCódigo: " + codigo +
                 "\nConsulta: " + (consulta != null ? consulta.getCodigo() : "N/A") +
-                "\nPaciente: " + (consulta != null ? consulta.getPaciente().getNome() : "N/A") +
-                "\nMédico: " + (consulta != null ? consulta.getMedico().getNome() : "N/A") +
                 "\nNota: " + nota +
                 "\nComentário: " + comentario;
     }
+
 
 }

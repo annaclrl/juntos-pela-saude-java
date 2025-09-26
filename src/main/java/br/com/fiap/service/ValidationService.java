@@ -2,6 +2,13 @@ package br.com.fiap.service;
 
 public class ValidationService {
 
+    public boolean validarNome(String nome) {
+        if (nome == null || nome.isBlank()) {
+            return false;
+        }
+        return nome.matches("[A-Za-zÀ-ú ]+");
+    }
+
     public boolean validarCPF(String cpf) {
         if (cpf == null) return false;
         String cpfNumeros = cpf.replaceAll("\\D", "");

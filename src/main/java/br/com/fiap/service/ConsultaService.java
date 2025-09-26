@@ -31,6 +31,21 @@ public class ConsultaService {
             return false;
         }
 
+        if (consulta.getPaciente() == null || pacienteDao.buscarPorCodigo(consulta.getPaciente().getCodigo()) == null) {
+            System.out.println("Paciente não encontrado!");
+            return false;
+        }
+
+        if (consulta.getMedico() == null || medicoDao.buscarPorCodigo(consulta.getMedico().getCodigo()) == null) {
+            System.out.println("Médico não encontrado!");
+            return false;
+        }
+
+        if (consulta.getFuncionario() != null && funcionarioDao.buscarPorCodigo(consulta.getFuncionario().getCodigo()) == null) {
+            System.out.println("Funcionário não encontrado!");
+            return false;
+        }
+
         if (consulta.getPaciente() == null || consulta.getMedico() == null) {
             System.out.println("Paciente ou médico não selecionado.");
             return false;

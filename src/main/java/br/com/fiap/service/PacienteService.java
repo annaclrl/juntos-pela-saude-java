@@ -17,6 +17,12 @@ public class PacienteService {
     }
 
     public boolean cadastrarPaciente(Paciente paciente) throws SQLException {
+
+        if (!validationService.validarNome(paciente.getNome())) {
+            System.out.println("Nome inválido! Não deve conter números ou caracteres especiais.");
+            return false;
+        }
+
         if (!validationService.validarCPF(paciente.getCpf())) {
             System.out.println("CPF inválido!");
             return false;
@@ -37,10 +43,18 @@ public class PacienteService {
             return false;
         }
 
-
-        Paciente existente = pacienteDao.buscarPorCpf(paciente.getCpf());
-        if (existente != null) {
+        if (pacienteDao.buscarPorCpf(paciente.getCpf()) != null) {
             System.out.println("Já existe um paciente com este CPF!");
+            return false;
+        }
+
+        if (pacienteDao.buscarPorEmail(paciente.getEmail()) != null) {
+            System.out.println("Já existe um paciente com este email!");
+            return false;
+        }
+
+        if (pacienteDao.buscarPorTelefone(paciente.getTelefone1(), paciente.getTelefone2()) != null) {
+            System.out.println("Já existe um paciente com estes telefones!");
             return false;
         }
 
@@ -66,7 +80,6 @@ public class PacienteService {
     public boolean deletarPaciente(int codigo) throws SQLException {
         return pacienteDao.deletar(codigo);
     }
-
 
     public void close() throws SQLException {
         pacienteDao.close();

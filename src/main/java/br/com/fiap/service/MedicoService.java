@@ -18,6 +18,12 @@ public class MedicoService {
     }
 
     public boolean cadastrarMedico(Medico medico) throws SQLException {
+
+        if (!validationService.validarNome(medico.getNome())) {
+            System.out.println("Nome inválido! Não deve conter números ou caracteres especiais.");
+            return false;
+        }
+
         if (!validationService.validarCPF(medico.getCpf())) {
             System.out.println("CPF inválido!");
             return false;
@@ -38,9 +44,22 @@ public class MedicoService {
             return false;
         }
 
+        if (medicoDao.buscarPorCpf(medico.getCpf()) != null) {
+            System.out.println("Já existe um médico com este CPF!");
+            return false;
+        }
 
-        Medico existente = medicoDao.buscarPorCrm(medico.getCrm());
-        if (existente != null) {
+        if (medicoDao.buscarPorEmail(medico.getEmail()) != null) {
+            System.out.println("Já existe um médico com este email!");
+            return false;
+        }
+
+        if (medicoDao.buscarPorTelefone(medico.getTelefone1(), medico.getTelefone2()) != null) {
+            System.out.println("Já existe um médico com estes telefones!");
+            return false;
+        }
+
+        if (medicoDao.buscarPorCrm(medico.getCrm()) != null) {
             System.out.println("Já existe um médico com este CRM!");
             return false;
         }

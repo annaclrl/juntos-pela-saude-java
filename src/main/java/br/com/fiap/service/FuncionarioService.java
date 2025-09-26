@@ -16,6 +16,12 @@ public class FuncionarioService {
     }
 
     public boolean cadastrarFuncionario(Funcionario funcionario) throws SQLException {
+
+        if (!validationService.validarNome(funcionario.getNome())) {
+            System.out.println("Nome inválido! Não deve conter números ou caracteres especiais.");
+            return false;
+        }
+
         if (!validationService.validarCPF(funcionario.getCpf())) {
             System.out.println("CPF inválido!");
             return false;
@@ -36,10 +42,18 @@ public class FuncionarioService {
             return false;
         }
 
-
-        Funcionario existente = funcionarioDao.buscarPorCpf(funcionario.getCpf());
-        if (existente != null) {
+        if (funcionarioDao.buscarPorCpf(funcionario.getCpf()) != null) {
             System.out.println("Já existe um funcionário com este CPF!");
+            return false;
+        }
+
+        if (funcionarioDao.buscarPorEmail(funcionario.getEmail()) != null) {
+            System.out.println("Já existe um funcionário com este email!");
+            return false;
+        }
+
+        if (funcionarioDao.buscarPorTelefone(funcionario.getTelefone1(), funcionario.getTelefone2()) != null) {
+            System.out.println("Já existe um funcionário com estes telefones!");
             return false;
         }
 

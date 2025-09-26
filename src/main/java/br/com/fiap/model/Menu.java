@@ -1,9 +1,6 @@
 package br.com.fiap.model;
 
-import br.com.fiap.service.ConsultaService;
-import br.com.fiap.service.FuncionarioService;
-import br.com.fiap.service.MedicoService;
-import br.com.fiap.service.PacienteService;
+import br.com.fiap.service.*;
 
 import java.sql.SQLException;
 import java.time.LocalDateTime;
@@ -23,6 +20,7 @@ public class Menu {
         MedicoService medicoService = new MedicoService();
         FuncionarioService funcionarioService = new FuncionarioService();
         ConsultaService consultaService = new ConsultaService();
+        FeedbackConsultaService feedbackConsultaService = new FeedbackConsultaService();
 
         boolean continuar = true;
 
@@ -32,6 +30,7 @@ public class Menu {
             System.out.println("2. Gerenciar Médicos");
             System.out.println("3. Gerenciar Funcionários");
             System.out.println("4. Gerenciar Consultas");
+            System.out.println("5. Gerenciar Feedbacks");
             System.out.println("0. Sair");
             System.out.print("Escolha uma opção: ");
             int opcao = scanner.nextInt();
@@ -50,6 +49,9 @@ public class Menu {
                 case 4:
                     menuConsultas(consultaService);
                     break;
+                case 5:
+                    gerenciarFeedbacks(feedbackConsultaService);
+                    break;
                 case 0:
                     System.out.println("Finalizando programa...");
                     continuar = false;
@@ -63,6 +65,7 @@ public class Menu {
         medicoService.close();
         funcionarioService.close();
         consultaService.close();
+        feedbackConsultaService.close();
     }
 
     private static void menuPacientes(PacienteService service) throws SQLException {
@@ -424,11 +427,11 @@ public class Menu {
 
     private static void cadastrarFuncionario(FuncionarioService service) throws SQLException {
         System.out.print("Nome: ");
-        String nome = scanner.nextLine() + scanner.next();
+        String nome = scanner.nextLine();
         System.out.print("Email: ");
-        String email = scanner.nextLine() + scanner.next();
+        String email = scanner.nextLine();
         System.out.print("CPF: ") ;
-        String cpf = scanner.nextLine() + scanner.next();
+        String cpf = scanner.nextLine();
 
         int idade = 0;
         boolean idadeValida = false;
@@ -444,9 +447,9 @@ public class Menu {
         }
 
         System.out.print("Primeiro telefone: ");
-        String telefone1 = scanner.nextLine() + scanner.next();
+        String telefone1 = scanner.nextLine();
         System.out.print("Segundo telefone: ");
-        String telefone2 = scanner.nextLine() + scanner.next();
+        String telefone2 = scanner.nextLine();
 
 
         Funcionario funcionario = new Funcionario();
@@ -718,4 +721,140 @@ public class Menu {
             consultas.forEach(System.out::println);
         }
     }
+
+    private static void gerenciarFeedbacks(FeedbackConsultaService service) throws SQLException {
+        boolean continuar = true;
+        while (continuar){
+            System.out.println("\n=== Gerenciar Feedbacks ===");
+            System.out.println("1. Cadastrar Feedback");
+            System.out.println("2. Listar Feedbacks");
+            System.out.println("3. Atualizar Feedback");
+            System.out.println("4. Deletar Feedback");
+            System.out.println("0. Voltar");
+            System.out.print("Escolha uma opção: ");
+            int opcao = scanner.nextInt();
+            scanner.nextLine();
+
+            switch (opcao) {
+                case 1:
+                    cadastrarFeedback(service);
+                    break;
+                case 2:
+                    listarFeedbacks(service);
+                    break;
+                case 3:
+                    atualizarFeedback(service);
+                    break;
+                case 4:
+                    deletarFeedback(service);
+                    break;
+                case 5:
+                    buscarFeedback(service);
+                case 6:
+                    listarFeedbacksPorConsulta(service);
+                case 0:
+                    System.out.println("Voltando ao menu principal");
+                    continuar = false;
+                    break;
+                default:
+                    System.out.println("Opção inválida.");
+            }
+        }
+    }
+
+    private static void cadastrarFeedback(FeedbackConsultaService service) throws SQLException {
+        System.out.print("Código da consulta: ");
+        int consultaId = scanner.nextInt();
+        scanner.nextLine();
+        System.out.print("Nota (0 a 5): ");
+        double nota = scanner.nextDouble();
+        scanner.nextLine();
+        System.out.print("Comentário: ");
+        String comentario = scanner.nextLine();
+
+        Consulta consulta = new Consulta();
+        consulta.setCodigo(consultaId);
+
+        FeedbackConsulta feedback = new FeedbackConsulta();
+        feedback.setConsulta(consulta);
+        feedback.setNota(nota);
+        feedback.setComentario(comentario);
+
+        if (service.cadastrarFeedback(feedback)) {
+            System.out.println("Feedback cadastrado com sucesso!");
+        } else {
+            System.out.println("Erro ao cadastrar feedback.");
+        }
+    }
+
+    private static void atualizarFeedback(FeedbackConsultaService service) throws SQLException {
+        System.out.print("Código do feedback: ");
+        int codigo = scanner.nextInt();
+        scanner.nextLine();
+        System.out.print("Nova nota (0 a 5): ");
+        double nota = scanner.nextDouble();
+        scanner.nextLine();
+        System.out.print("Novo comentário: ");
+        String comentario = scanner.nextLine();
+
+        FeedbackConsulta feedback = service.buscarPorCodigo(codigo);
+        if (feedback == null) {
+            System.out.println("Feedback não encontrado!");
+            return;
+        }
+
+        feedback.setNota(nota);
+        feedback.setComentario(comentario);
+
+        if (service.atualizarFeedback(feedback)) {
+            System.out.println("Feedback atualizado com sucesso!");
+        } else {
+            System.out.println("Erro ao atualizar feedback.");
+        }
+    }
+
+    private static void deletarFeedback(FeedbackConsultaService service) throws SQLException {
+        System.out.print("Código do feedback: ");
+        int codigo = scanner.nextInt();
+
+        if (service.deletarFeedback(codigo)) {
+            System.out.println("Feedback deletado com sucesso!");
+        } else {
+            System.out.println("Erro ao deletar feedback.");
+        }
+    }
+
+    private static void buscarFeedback(FeedbackConsultaService service) throws SQLException {
+        System.out.print("Código do feedback: ");
+        int codigo = scanner.nextInt();
+
+        FeedbackConsulta feedback = service.buscarPorCodigo(codigo);
+        if (feedback != null) {
+            System.out.println(feedback);
+        } else {
+            System.out.println("Feedback não encontrado.");
+        }
+    }
+
+    private static void listarFeedbacks(FeedbackConsultaService service) throws SQLException {
+        List<FeedbackConsulta> feedbacks = service.listarTodos();
+        if (feedbacks.isEmpty()) {
+            System.out.println("Nenhum feedback encontrado.");
+        } else {
+            feedbacks.forEach(System.out::println);
+        }
+    }
+
+    private static void listarFeedbacksPorConsulta(FeedbackConsultaService service) throws SQLException {
+        System.out.print("Código da consulta: ");
+        int consultaId = scanner.nextInt();
+
+        List<FeedbackConsulta> feedbacks = service.listarPorConsulta(consultaId);
+        if (feedbacks.isEmpty()) {
+            System.out.println("Nenhum feedback encontrado para essa consulta.");
+        } else {
+            feedbacks.forEach(System.out::println);
+        }
+    }
+
 }
