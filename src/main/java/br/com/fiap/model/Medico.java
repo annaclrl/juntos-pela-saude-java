@@ -42,6 +42,7 @@ public class Medico extends Pessoa {
                 "\nEmail: " + getEmail() +
                 "\nCPF: " + getEmail() +
                 "\nIdade: " + getIdade() +
+                "\nEmail: " + getEmail() +
                 "\nPrimeiro telefone: " + getTelefone1() +
                 "\nSegundo telefone: " + getTelefone2() +
                 "\nEspecialidade: " + especialidade +

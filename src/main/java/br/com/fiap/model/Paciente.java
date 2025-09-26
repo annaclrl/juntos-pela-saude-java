@@ -16,6 +16,7 @@ public class Paciente extends Pessoa {
                 "\nNome: " + getNome() +
                 "\nCPF: " + getCpf() +
                 "\nIdade: " + getIdade() +
+                "\nEmail: " + getEmail() +
                 "\nPrimeiro telefone: " + getTelefone1() +
                 "\nSegundo telefone: " + getTelefone2();
     }

@@ -23,8 +23,9 @@ public class Funcionario extends Pessoa {
     public String toString() {
         return "\nCódigo: " + codigo +
                 "\nNome: " + getNome() +
-                "\nIdade: " + getIdade() +
                 "\nCPF: " + getCpf() +
+                "\nIdade: " + getIdade() +
+                "\nEmail: " + getEmail() +
                 "\nPrimeiro telefone: " + getTelefone1() +
                 "\nSegundo telefone: " + getTelefone2();
     }
