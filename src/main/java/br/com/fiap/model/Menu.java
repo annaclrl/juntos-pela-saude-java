@@ -6,6 +6,9 @@ import br.com.fiap.service.MedicoService;
 import br.com.fiap.service.PacienteService;
 
 import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -13,12 +16,13 @@ public class Menu {
 
     private static final Scanner scanner = new Scanner(System.in);
 
+
     public void exibirMenu() throws SQLException, ClassNotFoundException {
 
         PacienteService pacienteService = new PacienteService();
         MedicoService medicoService = new MedicoService();
-        ConsultaService consultaService = new ConsultaService();
         FuncionarioService funcionarioService = new FuncionarioService();
+        ConsultaService consultaService = new ConsultaService();
 
         boolean continuar = true;
 
@@ -42,12 +46,13 @@ public class Menu {
                     break;
                 case 3:
                     menuFuncionarios(funcionarioService);
+                    break;
                 case 4:
                     menuConsultas(consultaService);
                     break;
                 case 0:
-                    continuar = false;
                     System.out.println("Finalizando programa...");
+                    continuar = false;
                     break;
                 default:
                     System.out.println("Opçaõ inválida!");
@@ -60,50 +65,75 @@ public class Menu {
         consultaService.close();
     }
 
-    public static void menuPacientes(PacienteService service) throws SQLException{
-        System.out.println("\n--- GERENCIAR PACIENTES ---");
-        System.out.println("1. Cadastrar paciente");
-        System.out.println("2. Listar pacientes");
-        System.out.println("3. Atualizar paciente");
-        System.out.println("4. Deletar paciente");
-        System.out.println("5. Buscar paciente por CPF");
-        System.out.println("0. Voltar");
-        System.out.print("Escolha uma opção: ");
-        int opcao = scanner.nextInt();
+    private static void menuPacientes(PacienteService service) throws SQLException {
+        boolean continuar = true;
 
-        switch (opcao) {
-            case 1:
-                cadastrarPaciente(service);
-                break;
-            case 2:
-                listarPaciente(service);
-                break;
-            case 3:
-                atualizarPaciente(service);
-                break;
-            case 4:
-                deletarPaciente(service);
-                break;
-            case 5:
-                buscarPacientePorCpf(service);
+        while (continuar) {
+            System.out.println("\n--- GERENCIAR PACIENTES ---");
+            System.out.println("1. Cadastrar paciente");
+            System.out.println("2. Listar pacientes");
+            System.out.println("3. Atualizar paciente");
+            System.out.println("4. Deletar paciente");
+            System.out.println("5. Buscar paciente por CPF");
+            System.out.println("0. Voltar");
+            System.out.print("Escolha uma opção: ");
+
+            int opcao = scanner.nextInt();
+
+            switch (opcao) {
+                case 1:
+                    cadastrarPaciente(service);
+                    break;
+                case 2:
+                    listarPaciente(service);
+                    break;
+                case 3:
+                    atualizarPaciente(service);
+                    break;
+                case 4:
+                    deletarPaciente(service);
+                    break;
+                case 5:
+                    buscarPacientePorCpf(service);
+                    break;
+                case 0:
+                    System.out.println("Voltando ao menu principal...");
+                    continuar = false;
+                    break;
+                default:
+                    System.out.println("Opção inválida!");
+            }
         }
     }
 
     private static void cadastrarPaciente(PacienteService service) throws SQLException {
         System.out.print("Nome: ");
-        String nome = scanner.nextLine() + scanner.next();
+        String nome = scanner.nextLine() + scanner.nextLine();
+
         System.out.print("Email: ");
-        String email = scanner.nextLine() + scanner.next();
+        String email = scanner.nextLine();
+
         System.out.print("CPF: ");
-        String cpf = scanner.nextLine() + scanner.next();
-        System.out.print("Idade: ");
-        int idade = scanner.nextInt();
-        scanner.nextLine();
+        String cpf = scanner.nextLine();
+
+        int idade = 0;
+        boolean idadeValida = false;
+        while (!idadeValida) {
+            System.out.print("Idade: ");
+            String input = scanner.nextLine();
+            try {
+                idade = Integer.parseInt(input);
+                idadeValida = true;
+            } catch (NumberFormatException e) {
+                System.out.println("Idade inválida! Digite apenas números.");
+            }
+        }
+
         System.out.print("Primeiro telefone: ");
         String telefone1 = scanner.nextLine();
+
         System.out.print("Segundo telefone: ");
         String telefone2 = scanner.nextLine();
-
 
         Paciente paciente = new Paciente();
         paciente.setNome(nome);
@@ -120,6 +150,7 @@ public class Menu {
         }
     }
 
+
     private static void listarPaciente(PacienteService service) throws SQLException {
         List<Paciente> pacientes = service.listarPacientes();
         if (pacientes.isEmpty()) {
@@ -132,6 +163,8 @@ public class Menu {
     private static void atualizarPaciente(PacienteService service) throws SQLException {
         System.out.print("Código do paciente para atualizar: ");
         int codigo = scanner.nextInt();
+        scanner.nextLine();
+
         Paciente paciente = service.buscarPorCodigo(codigo);
         if (paciente == null) {
             System.out.println("Paciente não encontrado!");
@@ -146,16 +179,15 @@ public class Menu {
         String email = scanner.nextLine();
         if (!email.isBlank()) paciente.setEmail(email);
 
-
         System.out.print("Nova idade (" + paciente.getIdade() + "): ");
         String idadeStr = scanner.nextLine();
         if (!idadeStr.isBlank()) paciente.setIdade(Integer.parseInt(idadeStr));
 
-        System.out.print("Novo primeiro telefone (" + paciente.getEmail() + "): ");
+        System.out.print("Novo primeiro telefone (" + paciente.getTelefone1() + "): ");
         String telefone1 = scanner.nextLine();
-        if (!telefone1.isBlank()) paciente.setTelefone2(telefone1);
+        if (!telefone1.isBlank()) paciente.setTelefone1(telefone1);
 
-        System.out.print("Novo segundo telefone (" + paciente.getEmail() + "): ");
+        System.out.print("Novo segundo telefone (" + paciente.getTelefone2() + "): ");
         String telefone2 = scanner.nextLine();
         if (!telefone2.isBlank()) paciente.setTelefone2(telefone2);
 
@@ -168,7 +200,7 @@ public class Menu {
 
     private static void deletarPaciente(PacienteService service) throws SQLException {
         System.out.print("Código do paciente para deletar: ");
-        int codigo = Integer.parseInt(scanner.nextLine());
+        int codigo = scanner.nextInt();
         if (service.deletarPaciente(codigo)) {
             System.out.println("Paciente deletado com sucesso!");
         } else {
@@ -178,7 +210,7 @@ public class Menu {
 
     private static void buscarPacientePorCpf(PacienteService service) throws SQLException {
         System.out.print("Digite o CPF: ");
-        String cpf = scanner.nextLine();
+        String cpf = scanner.nextLine() + scanner.next();
         Paciente paciente = service.buscarPorCpf(cpf);
         if (paciente != null) {
             System.out.println(paciente);
@@ -189,36 +221,46 @@ public class Menu {
 
 
     private static void menuMedicos(MedicoService service) throws SQLException {
-        System.out.println("\n--- GERENCIAR MÉDICOS ---");
-        System.out.println("1. Cadastrar médico");
-        System.out.println("2. Listar médicos");
-        System.out.println("3. Atualizar médico");
-        System.out.println("4. Deletar médico");
-        System.out.println("5. Buscar médico por CRM");
-        System.out.println("0. Voltar");
-        System.out.print("Escolha uma opção: ");
-        int opcao = scanner.nextInt();
-        scanner.nextLine();
 
-        switch (opcao) {
-            case 1:
-                cadastrarMedico(service);
-                break;
-            case 2:
-                listarMedicos(service);
-                break;
-            case 3:
-                atualizarMedico(service);
-                break;
-            case 4:
-                deletarMedico(service);
-                break;
-            case 5:
-                buscarMedicoPorCrm(service);
-                break;
+        boolean continuar = true;
+
+        while (continuar) {
+            System.out.println("\n--- GERENCIAR MÉDICOS ---");
+            System.out.println("1. Cadastrar médico");
+            System.out.println("2. Listar médicos");
+            System.out.println("3. Atualizar médico");
+            System.out.println("4. Deletar médico");
+            System.out.println("5. Buscar médico por CRM");
+            System.out.println("0. Voltar");
+            System.out.print("Escolha uma opção: ");
+            int opcao = scanner.nextInt();
+            scanner.nextLine();
+
+            switch (opcao) {
+                case 1:
+                    cadastrarMedico(service);
+                    break;
+                case 2:
+                    listarMedicos(service);
+                    break;
+                case 3:
+                    atualizarMedico(service);
+                    break;
+                case 4:
+                    deletarMedico(service);
+                    break;
+                case 5:
+                    buscarMedicoPorCrm(service);
+                    break;
+                case 0:
+                    System.out.println("Voltando ao menu principal");
+                    continuar = false;
+                    break;
+                default:
+                    System.out.println("Opção inválida!");
+            }
         }
     }
-
     private static void cadastrarMedico(MedicoService service) throws SQLException {
 
         System.out.print("Nome: ");
@@ -227,8 +269,20 @@ public class Menu {
         String email = scanner.nextLine();
         System.out.print("CPF: ");
         String cpf = scanner.nextLine();
-        System.out.print("Idade: ");
-        int idade = Integer.parseInt(scanner.nextLine());
+
+        int idade = 0;
+        boolean idadeValida = false;
+        while (!idadeValida) {
+            System.out.print("Idade: ");
+            String input = scanner.nextLine();
+            try {
+                idade = Integer.parseInt(input);
+                idadeValida = true;
+            } catch (NumberFormatException e) {
+                System.out.println("Idade inválida! Digite apenas números.");
+            }
+        }
+
         System.out.print("Primeiro telefone: ");
         String telefone1 = scanner.nextLine();
         System.out.print("Segundo telefone: ");
@@ -267,6 +321,8 @@ public class Menu {
     private static void atualizarMedico(MedicoService service) throws SQLException {
         System.out.print("Código do médico para atualizar: ");
         int codigo = Integer.parseInt(scanner.nextLine());
+
+
         Medico medico = service.buscarPorCodigo(codigo);
         if (medico == null) {
             System.out.println("Médico não encontrado!");
@@ -285,15 +341,15 @@ public class Menu {
         String idadeStr = scanner.nextLine();
         if (!idadeStr.isBlank()) medico.setIdade(Integer.parseInt(idadeStr));
 
-        System.out.print("Novo primeiro telefone (" + medico.getEmail() + "): ");
+        System.out.print("Novo primeiro telefone (" + medico.getTelefone1() + "): ");
         String telefone1 = scanner.nextLine();
         if (!telefone1.isBlank()) medico.setTelefone1(telefone1);
 
-        System.out.print("Novo segundo telefone (" + medico.getEmail() + "): ");
+        System.out.print("Novo segundo telefone (" + medico.getTelefone2() + "): ");
         String telefone2 = scanner.nextLine();
         if (!telefone2.isBlank()) medico.setTelefone2(telefone2);
 
-        System.out.print("Nova especialidade (" + medico.getNome() + "): ");
+        System.out.print("Nova especialidade (" + medico.getEspecialidade() + "): ");
         String especialidade = scanner.nextLine();
         if (!especialidade.isBlank()) medico.setEspecialidade(especialidade);
 
@@ -325,48 +381,72 @@ public class Menu {
         }
     }
 
-    public static void menuFuncionarios(FuncionarioService service) throws SQLException{
-        System.out.println("\n--- GERENCIAR FUNCIONÁRIOS ---");
-        System.out.println("1. Cadastrar funcionários");
-        System.out.println("2. Listar funcionários");
-        System.out.println("3. Atualizar funcionário");
-        System.out.println("4. Deletar funcionário");
-        System.out.println("5. Buscar funcionário por CPF");
-        System.out.println("0. Voltar");
-        System.out.print("Escolha uma opção: ");
-        int opcao = scanner.nextInt();
+    private static void menuFuncionarios(FuncionarioService service) throws SQLException {
 
-        switch (opcao) {
-            case 1:
-                cadastrarFuncionario(service);
-                break;
-            case 2:
-                listarFuncionario(service);
-                break;
-            case 3:
-                atualizarFuncionario(service);
-                break;
-            case 4:
-                deletarFuncionario(service);
-                break;
-            case 5:
-                buscarFuncionarioPorCpf(service);
+        boolean continuar = true;
+        while (continuar) {
+            System.out.println("\n--- GERENCIAR FUNCIONÁRIOS ---");
+            System.out.println("1. Cadastrar funcionário");
+            System.out.println("2. Listar funcionários");
+            System.out.println("3. Atualizar funcionário");
+            System.out.println("4. Deletar funcionário");
+            System.out.println("5. Buscar funcionário por CPF");
+            System.out.println("0. Voltar");
+            System.out.print("Escolha uma opção: ");
+            int opcao = scanner.nextInt();
+            scanner.nextLine();
+
+            switch (opcao) {
+                case 1:
+                    cadastrarFuncionario(service);
+                    break;
+                case 2:
+                    listarFuncionario(service);
+                    break;
+                case 3:
+                    atualizarFuncionario(service);
+                    break;
+                case 4:
+                    deletarFuncionario(service);
+                    break;
+                case 5:
+                    buscarFuncionarioPorCpf(service);
+                    break;
+                case 0:
+                    System.out.println("Voltando ao menu principal");
+                    continuar = false;
+                    break;
+                default:
+                    System.out.println("Opção inválida!");
+            }
         }
     }
 
     private static void cadastrarFuncionario(FuncionarioService service) throws SQLException {
         System.out.print("Nome: ");
-        String nome = scanner.nextLine();
+        String nome = scanner.nextLine() + scanner.next();
         System.out.print("Email: ");
-        String email = scanner.nextLine();
-        System.out.print("CPF: ");
-        String cpf = scanner.nextLine();
-        System.out.print("Idade: ");
-        int idade = Integer.parseInt(scanner.nextLine());
+        String email = scanner.nextLine() + scanner.next();
+        System.out.print("CPF: ") ;
+        String cpf = scanner.nextLine() + scanner.next();
+
+        int idade = 0;
+        boolean idadeValida = false;
+        while (!idadeValida) {
+            System.out.print("Idade: ");
+            String input = scanner.nextLine();
+            try {
+                idade = Integer.parseInt(input);
+                idadeValida = true;
+            } catch (NumberFormatException e) {
+                System.out.println("Idade inválida! Digite apenas números.");
+            }
+        }
+
         System.out.print("Primeiro telefone: ");
-        String telefone1 = scanner.nextLine();
+        String telefone1 = scanner.nextLine() + scanner.next();
         System.out.print("Segundo telefone: ");
-        String telefone2 = scanner.nextLine();
+        String telefone2 = scanner.nextLine() + scanner.next();
 
 
         Funcionario funcionario = new Funcionario();
@@ -396,6 +476,8 @@ public class Menu {
     private static void atualizarFuncionario(FuncionarioService service) throws SQLException {
         System.out.print("Código do funcionário para atualizar: ");
         int codigo = scanner.nextInt();
+        scanner.nextLine();
+
         Funcionario funcionario= service.buscarPorCodigo(codigo);
         if (funcionario == null) {
             System.out.println("Funcionário não encontrado!");
@@ -415,11 +497,11 @@ public class Menu {
         String idadeStr = scanner.nextLine();
         if (!idadeStr.isBlank()) funcionario.setIdade(Integer.parseInt(idadeStr));
 
-        System.out.print("Novo primeiro telefone (" + funcionario.getEmail() + "): ");
+        System.out.print("Novo primeiro telefone (" + funcionario.getTelefone1() + "): ");
         String telefone1 = scanner.nextLine();
-        if (!telefone1.isBlank()) funcionario.setTelefone2(telefone1);
+        if (!telefone1.isBlank()) funcionario.setTelefone1(telefone1);
 
-        System.out.print("Novo segundo telefone (" + funcionario.getEmail() + "): ");
+        System.out.print("Novo segundo telefone (" + funcionario.getTelefone2() + "): ");
         String telefone2 = scanner.nextLine();
         if (!telefone2.isBlank()) funcionario.setTelefone2(telefone2);
 
@@ -432,9 +514,9 @@ public class Menu {
 
     private static void deletarFuncionario(FuncionarioService service) throws SQLException {
         System.out.print("Código do funcionário para deletar: ");
-        int codigo = Integer.parseInt(scanner.nextLine());
+        int codigo = scanner.nextInt();
         if (service.deletarFuncionario(codigo)) {
-            System.out.println("Paciente deletado com sucesso!");
+            System.out.println("Funcionário deletado com sucesso!");
         } else {
             System.out.println("Erro ao deletar funcionário.");
         }
@@ -442,7 +524,7 @@ public class Menu {
 
     private static void buscarFuncionarioPorCpf(FuncionarioService service) throws SQLException {
         System.out.print("Digite o CPF: ");
-        String cpf = scanner.nextLine();
+        String cpf = scanner.nextLine() + scanner.next();
         Funcionario funcionario = service.buscarPorCpf(cpf);
         if (funcionario != null) {
             System.out.println(funcionario);
@@ -452,46 +534,170 @@ public class Menu {
     }
 
     private static void menuConsultas(ConsultaService service) throws SQLException {
-        System.out.println("\n--- GERENCIAR CONSULTAS ---");
-        System.out.println("1. Agendar Consulta");
-        System.out.println("2. Atualizar consulta");
-        System.out.println("3. Cancelar consulta");
-        System.out.println("4. Listar todas as consultas");
-        System.out.println("5. Listar consultas por paciente");
-        System.out.println("6. Listar consultas por médico");
-        System.out.println("7. Adicionar feedback");
-        System.out.println("0. Voltar");
-        System.out.print("Escolha uma opção: ");
-        int opcao = scanner.nextInt();
 
-        switch (opcao) {
-            /*case 1:
-                cadastrarConsulta(service);
-                break;
-            case 2:
-                atualizarConsulta(service);
-                break;
-            case 3:
-                deletarConsulta(service);
-                break;
-            case 4:
-                listarConsultas(service);
-                break;*/
-            case 5:
-                listarConsultasPorPaciente(service);
-                break;
-            case 6:
-                listarConsultasPorMedico(service);
-                break;
-            case 7:
-                adicionarFeedback(service);
-                break;
+         boolean continuar = true;
+
+        while (continuar) {
+            System.out.println("\n--- GERENCIAR CONSULTAS ---");
+            System.out.println("1. Agendar Consulta");
+            System.out.println("2. Atualizar consulta");
+            System.out.println("3. Cancelar consulta");
+            System.out.println("4. Listar todas as consultas");
+            System.out.println("5. Listar consultas por paciente");
+            System.out.println("6. Listar consultas por médico");
+            System.out.println("0. Voltar");
+            System.out.print("Escolha uma opção: ");
+            int opcao = scanner.nextInt();
+            scanner.nextLine();
+
+            switch (opcao) {
+                case 1:
+                    cadastrarConsulta(service);
+                    break;
+                case 2:
+                    atualizarConsulta(service);
+                    break;
+                case 3:
+                    deletarConsulta(service);
+                    break;
+                case 4:
+                    listarConsultas(service);
+                    break;
+                case 5:
+                    listarConsultasPorPaciente(service);
+                    break;
+                case 6:
+                    listarConsultasPorMedico(service);
+                    break;
+                case 0:
+                    System.out.println("Voltando ao menu principal");
+                    continuar = false;
+                    break;
+                default:
+                    System.out.println("Opção inválida!");
+            }
+        }
+    }
+    private static void cadastrarConsulta(ConsultaService service) throws SQLException {
+        try {
+            System.out.print("Código do paciente: ");
+            int pacienteCodigo = Integer.parseInt(scanner.nextLine().trim());
+
+            System.out.print("Código do médico: ");
+            int medicoCodigo = Integer.parseInt(scanner.nextLine().trim());
+
+            System.out.print("Código do funcionário: ");
+            int funcionarioCodigo = Integer.parseInt(scanner.nextLine().trim());
+
+            System.out.print("Data e hora (dd/MM/yyyy HH:mm): ");
+            String dataHoraStr = scanner.nextLine().trim();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+            LocalDateTime dataHora = LocalDateTime.parse(dataHoraStr, formatter);
+
+
+            if (dataHora.isBefore(LocalDateTime.now())) {
+                System.out.println("Data/hora inválida! Deve ser futura.");
+                return;
+            }
+
+            Consulta consulta = new Consulta();
+
+            Paciente paciente = new Paciente();
+            paciente.setCodigo(pacienteCodigo);
+
+            Medico medico = new Medico();
+            medico.setCodigo(medicoCodigo);
+
+            Funcionario funcionario = new Funcionario();
+            funcionario.setCodigo(funcionarioCodigo);
+
+            consulta.setPaciente(paciente);
+            consulta.setMedico(medico);
+            consulta.setFuncionario(funcionario);
+            consulta.setDataHora(dataHora);
+            consulta.setStatus(StatusConsulta.CONFIRMADA);
+
+            if (service.cadastrarConsulta(consulta)) {
+                System.out.println("Consulta agendada com sucesso!");
+            } else {
+                System.out.println("Erro ao agendar consulta.");
+            }
+
+        } catch (DateTimeParseException e) {
+            System.out.println("Formato de data inválido! Use dd/MM/yyyy HH:mm");
+        } catch (NumberFormatException e) {
+            System.out.println("Código do paciente, médico ou funcionário inválido!");
+        }
+    }
+
+    private static void atualizarConsulta(ConsultaService service) throws SQLException {
+        System.out.print("Código da consulta: ");
+        int consultaCodigo = Integer.parseInt(scanner.nextLine());
+
+        Consulta consulta = service.buscarConsultaPorCodigo(consultaCodigo);
+        if (consulta == null) {
+            System.out.println("Consulta não encontrada!");
+            return;
+        }
+
+        System.out.println("Consulta atual: " + consulta);
+
+        System.out.print("Data e hora (dd/MM/yyyy HH:mm): ");
+        String dataHoraStr = scanner.nextLine().trim();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+        LocalDateTime novaDataHora = LocalDateTime.parse(dataHoraStr, formatter);
+
+        if (novaDataHora.isBefore(LocalDateTime.now())) {
+            System.out.println("Data/hora inválida! Deve ser futura.");
+            return;
+        }
+
+        System.out.print("Novo status (Concluida, Em Andamento, Confirmada): ");
+        String statusInput = scanner.nextLine().trim().toUpperCase().replace(" ", "_");
+
+        StatusConsulta novoStatus;
+        try {
+            novoStatus = StatusConsulta.valueOf(statusInput);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Status inválido! Use apenas: CONCLUIDA, EM ANDAMENTO ou CONFIRMADA.");
+            return;
+        }
+
+        consulta.setDataHora(novaDataHora);
+        consulta.setStatus(novoStatus);
+
+        if (service.atualizarConsulta(consulta)) {
+            System.out.println("Consulta atualizada com sucesso!");
+        } else {
+            System.out.println("Erro ao atualizar consulta.");
+        }
+    }
+
+    private static void deletarConsulta(ConsultaService service) throws SQLException {
+        System.out.print("Código da consulta a cancelar: ");
+        int consultaCodigo = Integer.parseInt(scanner.nextLine());
+
+        if (service.deletarConsulta(consultaCodigo)) {
+            System.out.println("Consulta cancelada com sucesso!");
+        } else {
+            System.out.println("Erro ao cancelar consulta.");
+        }
+    }
+
+    private static void listarConsultas(ConsultaService service) throws SQLException {
+        List<Consulta> consultas = service.listarConsultas();
+        if (consultas.isEmpty()) {
+            System.out.println("Nenhuma consulta cadastrada.");
+        } else {
+            consultas.forEach(System.out::println);
         }
     }
 
     private static void listarConsultasPorPaciente(ConsultaService service) throws SQLException {
         System.out.print("Código do paciente: ");
-        int pacienteCodigo = Integer.parseInt(scanner.nextLine());
+        int pacienteCodigo = scanner.nextInt();
+        scanner.nextLine();
+
         List<Consulta> consultas = service.listarConsultasPorPaciente(pacienteCodigo);
         if (consultas.isEmpty()) {
             System.out.println("Nenhuma consulta encontrada para este paciente.");
@@ -502,36 +708,14 @@ public class Menu {
 
     private static void listarConsultasPorMedico(ConsultaService service) throws SQLException {
         System.out.print("Código do médico: ");
-        int medicoCodigo = Integer.parseInt(scanner.nextLine());
+        int medicoCodigo = scanner.nextInt();
+        scanner.nextLine();
+
         List<Consulta> consultas = service.listarConsultasPorMedico(medicoCodigo);
         if (consultas.isEmpty()) {
             System.out.println("Nenhuma consulta encontrada para este médico.");
         } else {
             consultas.forEach(System.out::println);
         }
-
     }
-
-    private static void adicionarFeedback(ConsultaService service) throws SQLException {
-        System.out.print("Código da consulta: ");
-        int codigoConsulta = Integer.parseInt(scanner.nextLine());
-
-        Consulta consulta = service.buscarPorCodigo(codigoConsulta);
-        if (consulta == null) {
-            System.out.println("Consulta não encontrada!");
-            return;
-        }
-
-        System.out.print("Digite o feedback: ");
-        String feedback = scanner.nextLine();
-
-        consulta.setFeedback(feedback);
-
-        if (service.adicionarFeedback(consulta)) {
-            System.out.println("Feedback adicionado com sucesso!");
-        } else {
-            System.out.println("Erro ao adicionar feedback.");
-        }
-    }
-
 }
