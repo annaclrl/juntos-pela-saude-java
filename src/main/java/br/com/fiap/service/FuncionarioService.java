@@ -31,6 +31,12 @@ public class FuncionarioService {
             return false;
         }
 
+        if (!validationService.validarTelefoneSecundario(funcionario.getTelefone1(), funcionario.getTelefone2())) {
+            System.out.println("O telefone secundário não pode ser igual ao telefone principal!");
+            return false;
+        }
+
+
         Funcionario existente = funcionarioDao.buscarPorCpf(funcionario.getCpf());
         if (existente != null) {
             System.out.println("Já existe um funcionário com este CPF!");

@@ -32,6 +32,12 @@ public class PacienteService {
             return false;
         }
 
+        if (!validationService.validarTelefoneSecundario(paciente.getTelefone1(), paciente.getTelefone2())) {
+            System.out.println("O telefone secundário não pode ser igual ao telefone principal!");
+            return false;
+        }
+
+
         Paciente existente = pacienteDao.buscarPorCpf(paciente.getCpf());
         if (existente != null) {
             System.out.println("Já existe um paciente com este CPF!");

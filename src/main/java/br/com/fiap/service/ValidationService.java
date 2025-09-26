@@ -16,4 +16,10 @@ public class ValidationService {
         if (email == null || email.isBlank()) return false;
         return email.contains("@");
     }
+
+    public boolean validarTelefoneSecundario(String tel1, String tel2) {
+        if (tel1 == null || tel2 == null) return false;
+        return !tel1.equals(tel2);
+    }
+
 }

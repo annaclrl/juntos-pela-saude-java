@@ -33,6 +33,12 @@ public class MedicoService {
             return false;
         }
 
+        if (!validationService.validarTelefoneSecundario(medico.getTelefone1(), medico.getTelefone2())) {
+            System.out.println("O telefone secundário não pode ser igual ao telefone principal!");
+            return false;
+        }
+
+
         Medico existente = medicoDao.buscarPorCrm(medico.getCrm());
         if (existente != null) {
             System.out.println("Já existe um médico com este CRM!");
