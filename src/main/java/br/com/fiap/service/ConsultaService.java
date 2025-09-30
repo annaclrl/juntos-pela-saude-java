@@ -4,7 +4,8 @@ import br.com.fiap.dao.ConsultaDao;
 import br.com.fiap.dao.FuncionarioDao;
 import br.com.fiap.dao.PacienteDao;
 import br.com.fiap.dao.MedicoDao;
-import br.com.fiap.model.*;
+import br.com.fiap.model.Consulta;
+import br.com.fiap.model.StatusConsulta;
 
 import java.sql.SQLException;
 import java.time.LocalDateTime;
@@ -24,8 +25,7 @@ public class ConsultaService {
         this.funcionarioDao = new FuncionarioDao();
     }
 
-
-    public boolean cadastrarConsulta(Consulta consulta) throws SQLException {
+    private boolean validarConsulta(Consulta consulta) throws SQLException {
         if (consulta.getDataHora() == null || consulta.getDataHora().isBefore(LocalDateTime.now())) {
             System.out.println("Data/hora inválida! Deve ser futura.");
             return false;
@@ -46,23 +46,24 @@ public class ConsultaService {
             return false;
         }
 
-        if (consulta.getPaciente() == null || consulta.getMedico() == null) {
-            System.out.println("Paciente ou médico não selecionado.");
-            return false;
-        }
+        return true;
+    }
+
+    public boolean cadastrarConsulta(Consulta consulta) throws SQLException {
+        if (!validarConsulta(consulta)) return false;
 
         consulta.setStatus(StatusConsulta.CONFIRMADA);
         return consultaDao.inserir(consulta);
     }
 
+    public boolean atualizarConsulta(Consulta consulta) throws SQLException {
+        if (!validarConsulta(consulta)) return false;
+        return consultaDao.atualizar(consulta);
+    }
+
     public List<Consulta> listarConsultas() throws SQLException {
         return consultaDao.listarTodos();
     }
-
-    public boolean atualizarConsulta(Consulta consulta) throws SQLException {
-            return consultaDao.atualizar(consulta);
-    }
-
 
     public List<Consulta> listarConsultasPorPaciente(int pacienteCodigo) throws SQLException {
         return consultaDao.listarPorPaciente(pacienteCodigo);
@@ -73,13 +74,12 @@ public class ConsultaService {
     }
 
     public Consulta buscarConsultaPorCodigo(int codigo) throws SQLException {
-            return consultaDao.buscarPorCodigo(codigo);
+        return consultaDao.buscarPorCodigo(codigo);
     }
 
     public boolean deletarConsulta(int codigo) throws SQLException {
         return consultaDao.deletar(codigo);
     }
-
 
     public void close() throws SQLException {
         consultaDao.close();
@@ -87,5 +87,4 @@ public class ConsultaService {
         medicoDao.close();
         funcionarioDao.close();
     }
-
 }

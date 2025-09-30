@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class FuncionarioService {
+
     private final FuncionarioDao funcionarioDao;
     private final ValidationService validationService;
 
@@ -15,8 +16,7 @@ public class FuncionarioService {
         this.validationService = new ValidationService();
     }
 
-    public boolean cadastrarFuncionario(Funcionario funcionario) throws SQLException {
-
+    private boolean validarFuncionario(Funcionario funcionario) {
         if (!validationService.validarNome(funcionario.getNome())) {
             System.out.println("Nome inválido! Não deve conter números ou caracteres especiais.");
             return false;
@@ -28,7 +28,7 @@ public class FuncionarioService {
         }
 
         if (!validationService.validarIdade(funcionario.getIdade())) {
-            System.out.println("Idade inválida!");
+            System.out.println("Idade inválida! Deve estar entre 1 e 119.");
             return false;
         }
 
@@ -41,6 +41,12 @@ public class FuncionarioService {
             System.out.println("O telefone secundário não pode ser igual ao telefone principal!");
             return false;
         }
+
+        return true;
+    }
+
+    public boolean cadastrarFuncionario(Funcionario funcionario) throws SQLException {
+        if (!validarFuncionario(funcionario)) return false;
 
         if (funcionarioDao.buscarPorCpf(funcionario.getCpf()) != null) {
             System.out.println("Já existe um funcionário com este CPF!");
@@ -60,16 +66,17 @@ public class FuncionarioService {
         return funcionarioDao.inserir(funcionario);
     }
 
+    public boolean atualizarFuncionario(Funcionario funcionario) throws SQLException {
+        if (!validarFuncionario(funcionario)) return false;
+        return funcionarioDao.atualizar(funcionario);
+    }
+
     public List<Funcionario> listarFuncionarios() throws SQLException {
         return funcionarioDao.listarTodos();
     }
 
     public Funcionario buscarPorCpf(String cpf) throws SQLException {
         return funcionarioDao.buscarPorCpf(cpf);
-    }
-
-    public boolean atualizarFuncionario(Funcionario funcionario) throws SQLException {
-        return funcionarioDao.atualizar(funcionario);
     }
 
     public Funcionario buscarPorCodigo(int codigo) throws SQLException {
@@ -79,7 +86,6 @@ public class FuncionarioService {
     public boolean deletarFuncionario(int codigo) throws SQLException {
         return funcionarioDao.deletar(codigo);
     }
-
 
     public void close() throws SQLException {
         funcionarioDao.close();

@@ -30,7 +30,7 @@ public class MedicoDao implements AutoCloseable {
             ps.setInt(4, medico.getIdade());
             ps.setString(5, medico.getTelefone1());
             ps.setString(6, medico.getTelefone2());
-            ps.setInt(7, medico.getCrm());
+            ps.setString(7, medico.getCrm());
             ps.setString(8, medico.getEspecialidade());
             return ps.executeUpdate() > 0;
         }
@@ -50,7 +50,6 @@ public class MedicoDao implements AutoCloseable {
         return medicos;
     }
 
-
     public Medico buscarPorCodigo(int codigo) throws SQLException {
         String sql = "SELECT * FROM T_JPS_MEDICO WHERE ID_MEDICO = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -64,11 +63,11 @@ public class MedicoDao implements AutoCloseable {
         return null;
     }
 
-    public Medico buscarPorCrm(int crm) throws SQLException {
+    public Medico buscarPorCrm(String crm) throws SQLException {
         String sql = "SELECT * FROM T_JPS_MEDICO WHERE CRM_MEDICO=?";
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, crm);
+            ps.setString(1, crm);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     return mapResultSetToMedico(rs);
@@ -142,7 +141,7 @@ public class MedicoDao implements AutoCloseable {
             ps.setInt(4, medico.getIdade());
             ps.setString(5, medico.getTelefone1());
             ps.setString(6, medico.getTelefone2());
-            ps.setInt(7, medico.getCrm());
+            ps.setString(7, medico.getCrm());
             ps.setString(8, medico.getEspecialidade());
             ps.setInt(9, medico.getCodigo());
 
@@ -159,7 +158,6 @@ public class MedicoDao implements AutoCloseable {
         }
     }
 
-
     private Medico mapResultSetToMedico(ResultSet rs) throws SQLException {
 
         return new Medico(
@@ -170,7 +168,7 @@ public class MedicoDao implements AutoCloseable {
                 rs.getInt("IDD_MEDICO"),
                 rs.getString("TEL1_MEDICO"),
                 rs.getString("TEL2_MEDICO"),
-                rs.getInt("CRM_MEDICO"),
+                rs.getString("CRM_MEDICO"),
                 rs.getString("ESP_MEDICO")
         );
     }

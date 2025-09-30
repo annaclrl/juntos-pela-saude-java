@@ -2,13 +2,12 @@ package br.com.fiap.dao;
 
 import br.com.fiap.factory.ConnectionFactory;
 import br.com.fiap.model.Funcionario;
-import br.com.fiap.model.Medico;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FuncionarioDao {
+public class FuncionarioDao implements AutoCloseable {
 
     private final Connection conn;
 
@@ -152,6 +151,7 @@ public class FuncionarioDao {
         );
     }
 
+    @Override
     public void close() throws SQLException {
         if (conn != null && !conn.isClosed()) {
             conn.close();

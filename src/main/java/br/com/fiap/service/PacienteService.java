@@ -16,8 +16,7 @@ public class PacienteService {
         this.validationService = new ValidationService();
     }
 
-    public boolean cadastrarPaciente(Paciente paciente) throws SQLException {
-
+    private boolean validarPaciente(Paciente paciente) {
         if (!validationService.validarNome(paciente.getNome())) {
             System.out.println("Nome inválido! Não deve conter números ou caracteres especiais.");
             return false;
@@ -29,7 +28,7 @@ public class PacienteService {
         }
 
         if (!validationService.validarIdade(paciente.getIdade())) {
-            System.out.println("Idade inválida!");
+            System.out.println("Idade inválida! Deve estar entre 1 e 119.");
             return false;
         }
 
@@ -42,6 +41,12 @@ public class PacienteService {
             System.out.println("O telefone secundário não pode ser igual ao telefone principal!");
             return false;
         }
+
+        return true;
+    }
+
+    public boolean cadastrarPaciente(Paciente paciente) throws SQLException {
+        if (!validarPaciente(paciente)) return false;
 
         if (pacienteDao.buscarPorCpf(paciente.getCpf()) != null) {
             System.out.println("Já existe um paciente com este CPF!");
@@ -69,12 +74,13 @@ public class PacienteService {
         return pacienteDao.buscarPorCpf(cpf);
     }
 
-    public boolean atualizarPaciente(Paciente paciente) throws SQLException {
-        return pacienteDao.atualizar(paciente);
-    }
-
     public Paciente buscarPorCodigo(int codigo) throws SQLException {
         return pacienteDao.buscarPorCodigo(codigo);
+    }
+
+    public boolean atualizarPaciente(Paciente paciente) throws SQLException {
+        if (!validarPaciente(paciente)) return false;
+        return pacienteDao.atualizar(paciente);
     }
 
     public boolean deletarPaciente(int codigo) throws SQLException {
@@ -84,5 +90,4 @@ public class PacienteService {
     public void close() throws SQLException {
         pacienteDao.close();
     }
-
 }

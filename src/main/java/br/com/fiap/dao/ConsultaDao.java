@@ -47,6 +47,49 @@ public class ConsultaDao implements AutoCloseable  {
         return consultas;
     }
 
+    public Consulta buscarPorCodigo(int codigo) throws SQLException {
+        String sql = "SELECT * FROM T_JPS_CONSULTA WHERE ID_CONSULTA = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, codigo);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return mapResultSetToConsulta(rs);
+                }
+            }
+        }
+        return null;
+    }
+
+    public List<Consulta> listarPorMedico(int medicoCodigo) throws SQLException {
+        List<Consulta> consultas = new ArrayList<>();
+        String sql = "SELECT * FROM T_JPS_CONSULTA WHERE ID_MEDICO=?";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, medicoCodigo);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    consultas.add(mapResultSetToConsulta(rs));
+                }
+            }
+        }
+        return consultas;
+    }
+
+    public List<Consulta> listarPorPaciente(int pacienteCodigo) throws SQLException {
+        List<Consulta> consultas = new ArrayList<>();
+        String sql = "SELECT * FROM T_JPS_CONSULTA WHERE ID_PACIENTE=?";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, pacienteCodigo);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    consultas.add(mapResultSetToConsulta(rs));
+                }
+            }
+        }
+        return consultas;
+    }
+
     public boolean atualizar(Consulta consulta) throws SQLException {
         String sql = """
             UPDATE T_JPS_CONSULTA 
@@ -66,19 +109,6 @@ public class ConsultaDao implements AutoCloseable  {
         }
     }
 
-    public Consulta buscarPorCodigo(int codigo) throws SQLException {
-        String sql = "SELECT * FROM T_JPS_CONSULTA WHERE ID_CONSULTA = ?";
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, codigo);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return mapResultSetToConsulta(rs);
-                }
-            }
-        }
-        return null;
-    }
-
     public boolean deletar(int codigo) throws SQLException {
         String sql = "DELETE FROM T_JPS_CONSULTA WHERE ID_CONSULTA=?";
 
@@ -87,37 +117,6 @@ public class ConsultaDao implements AutoCloseable  {
             return ps.executeUpdate() > 0;
         }
     }
-
-    public List<Consulta> listarPorPaciente(int pacienteCodigo) throws SQLException {
-        List<Consulta> consultas = new ArrayList<>();
-        String sql = "SELECT * FROM T_JPS_CONSULTA WHERE ID_PACIENTE=?";
-
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, pacienteCodigo);
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    consultas.add(mapResultSetToConsulta(rs));
-                }
-            }
-        }
-        return consultas;
-    }
-
-    public List<Consulta> listarPorMedico(int medicoCodigo) throws SQLException {
-        List<Consulta> consultas = new ArrayList<>();
-        String sql = "SELECT * FROM T_JPS_CONSULTA WHERE ID_MEDICO=?";
-
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, medicoCodigo);
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    consultas.add(mapResultSetToConsulta(rs));
-                }
-            }
-        }
-        return consultas;
-    }
-
 
     private Consulta mapResultSetToConsulta(ResultSet rs) throws SQLException {
         Paciente paciente = new Paciente();
@@ -146,7 +145,6 @@ public class ConsultaDao implements AutoCloseable  {
                 status
         );
     }
-
 
     @Override
     public void close() throws SQLException {

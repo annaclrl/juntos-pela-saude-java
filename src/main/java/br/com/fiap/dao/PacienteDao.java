@@ -110,7 +110,6 @@ public class PacienteDao  implements  AutoCloseable{
         return null;
     }
 
-
     public boolean atualizar(Paciente paciente) throws SQLException {
         String sql = """
             UPDATE T_JPS_PACIENTE 
@@ -139,7 +138,6 @@ public class PacienteDao  implements  AutoCloseable{
             return ps.executeUpdate() > 0;
         }
     }
-
 
     private Paciente mapResultSetToPaciente(ResultSet rs) throws SQLException {
 

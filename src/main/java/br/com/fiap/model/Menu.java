@@ -13,7 +13,6 @@ public class Menu {
 
     private static final Scanner scanner = new Scanner(System.in);
 
-
     public void exibirMenu() throws SQLException, ClassNotFoundException {
 
         PacienteService pacienteService = new PacienteService();
@@ -82,6 +81,7 @@ public class Menu {
             System.out.print("Escolha uma opção: ");
 
             int opcao = scanner.nextInt();
+            scanner.nextLine();
 
             switch (opcao) {
                 case 1:
@@ -111,7 +111,7 @@ public class Menu {
 
     private static void cadastrarPaciente(PacienteService service) throws SQLException {
         System.out.print("Nome: ");
-        String nome = scanner.nextLine() + scanner.nextLine();
+        String nome = scanner.nextLine();
 
         System.out.print("Email: ");
         String email = scanner.nextLine();
@@ -152,7 +152,6 @@ public class Menu {
             System.out.println("Erro ao cadastrar paciente.");
         }
     }
-
 
     private static void listarPaciente(PacienteService service) throws SQLException {
         List<Paciente> pacientes = service.listarPacientes();
@@ -213,7 +212,8 @@ public class Menu {
 
     private static void buscarPacientePorCpf(PacienteService service) throws SQLException {
         System.out.print("Digite o CPF: ");
-        String cpf = scanner.nextLine() + scanner.next();
+        String cpf = scanner.nextLine();
+
         Paciente paciente = service.buscarPorCpf(cpf);
         if (paciente != null) {
             System.out.println(paciente);
@@ -221,7 +221,6 @@ public class Menu {
             System.out.println("Paciente não encontrado!");
         }
     }
-
 
     private static void menuMedicos(MedicoService service) throws SQLException {
 
@@ -264,6 +263,7 @@ public class Menu {
             }
         }
     }
+
     private static void cadastrarMedico(MedicoService service) throws SQLException {
 
         System.out.print("Nome: ");
@@ -291,7 +291,7 @@ public class Menu {
         System.out.print("Segundo telefone: ");
         String telefone2 = scanner.nextLine();
         System.out.print("CRM: ");
-        int crm = Integer.parseInt(scanner.nextLine());
+        String crm = scanner.nextLine();
         System.out.print("Especialidade: ");
         String especialidade = scanner.nextLine();
 
@@ -375,7 +375,7 @@ public class Menu {
 
     private static void buscarMedicoPorCrm(MedicoService service) throws SQLException {
         System.out.print("Digite o CRM: ");
-        int crm = scanner.nextInt();
+        String crm = scanner.nextLine();
         Medico medico = service.buscarPorCrm(crm);
         if (medico != null) {
             System.out.println(medico);
@@ -527,7 +527,7 @@ public class Menu {
 
     private static void buscarFuncionarioPorCpf(FuncionarioService service) throws SQLException {
         System.out.print("Digite o CPF: ");
-        String cpf = scanner.nextLine() + scanner.next();
+        String cpf = scanner.nextLine();
         Funcionario funcionario = service.buscarPorCpf(cpf);
         if (funcionario != null) {
             System.out.println(funcionario);
@@ -581,6 +581,7 @@ public class Menu {
             }
         }
     }
+
     private static void cadastrarConsulta(ConsultaService service) throws SQLException {
         try {
             System.out.print("Código do paciente: ");
@@ -730,6 +731,8 @@ public class Menu {
             System.out.println("2. Listar Feedbacks");
             System.out.println("3. Atualizar Feedback");
             System.out.println("4. Deletar Feedback");
+            System.out.println("5. Buscar Feedback por Código");
+            System.out.println("6. Listar Feedback por conuslta ");
             System.out.println("0. Voltar");
             System.out.print("Escolha uma opção: ");
             int opcao = scanner.nextInt();
@@ -750,8 +753,10 @@ public class Menu {
                     break;
                 case 5:
                     buscarFeedback(service);
+                    break;
                 case 6:
                     listarFeedbacksPorConsulta(service);
+                    break;
                 case 0:
                     System.out.println("Voltando ao menu principal");
                     continuar = false;

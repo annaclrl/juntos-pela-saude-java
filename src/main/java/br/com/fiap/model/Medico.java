@@ -3,9 +3,9 @@ package br.com.fiap.model;
 public class Medico extends Pessoa {
 
     private String especialidade;
-    private int crm;
+    private String crm;
 
-    public Medico(int codigo, String nome, String email, String cpf, int idade, String telefone1,String telefone2, int crm, String especialidade) {
+    public Medico(int codigo, String nome, String email, String cpf, int idade, String telefone1,String telefone2, String crm, String especialidade) {
         super(codigo, nome, email, cpf, idade, telefone1, telefone2);
         this.crm = crm;
         this.especialidade = especialidade;
@@ -23,17 +23,14 @@ public class Medico extends Pessoa {
         this.especialidade = especialidade;
     }
 
-    public int getCrm() {
+    public String getCrm() {
         return crm;
     }
 
-    public void setCrm(int crm) {
+    public void setCrm(String crm) {
         this.crm = crm;
     }
 
-    public boolean isCrmValido() {
-        return crm > 0 && String.valueOf(crm).length() >= 6;
-    }
 
     @Override
     public String toString() {
